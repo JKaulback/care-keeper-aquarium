@@ -71,7 +71,14 @@ class FishTest {
     @Test
     void testFeed() {
         fish.takeDamage();
-        fish.feed(10);
+        int healthAfterDamage = fish.getHealth();
+        fish.feed(1);
+        assertEquals(healthAfterDamage + 1, fish.getHealth());
+    }
+
+    @Test
+    void testFeedMaxCap() {
+        fish.feed(50);
         assertEquals(100, fish.getHealth());
     }
 
@@ -97,7 +104,7 @@ class FishTest {
         
         fish.grow();
         fish.grow();
-        // Should not increase size when health < 50
+        // Should not grow at all when health < 50
         assertEquals(0, fish.getAge());
         assertEquals(1, fish.getSize());
     }
