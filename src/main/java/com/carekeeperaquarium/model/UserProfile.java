@@ -9,6 +9,8 @@ public class UserProfile {
     private String userName;
     private int points;
     private final ArrayList<Fish> ownedFishes;
+    
+    private final int MAX_FISH = 10;
 
     // --- CONSTRUCTORS ---
     public UserProfile(String userName) {
@@ -56,7 +58,8 @@ public class UserProfile {
     }
 
     public void addFish(Fish newFish) {
-        this.ownedFishes.add(newFish);
+        if (ownedFishes.size() <= MAX_FISH)
+            this.ownedFishes.add(newFish);
     }
 
     public Fish getFish(int id) throws FishNotFound {
