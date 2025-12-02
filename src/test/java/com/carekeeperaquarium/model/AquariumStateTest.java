@@ -1,12 +1,12 @@
 package com.carekeeperaquarium.model;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Random;
 
 import com.carekeeperaquarium.exception.TooManyFish;
 import com.carekeeperaquarium.exception.UserNotFound;
@@ -20,7 +20,7 @@ class AquariumStateTest {
     @BeforeEach
     void setUp() {
         random = new Random();
-        aquarium = AquariumState.getAquarium();
+        aquarium = AquariumState.getInstance();
         aquarium.reset(); // Reset state before each test
         user1 = new UserProfile("User1");
         user2 = new UserProfile("User2");
