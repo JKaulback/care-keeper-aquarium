@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
+import com.carekeeperaquarium.exception.TooManyFish;
 import com.carekeeperaquarium.exception.UserNotFound;
 
 class AquariumStateTest {
@@ -105,7 +106,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRecalculateCleanlinessWithFish() {
+    void testRecalculateCleanlinessWithFish() throws TooManyFish {
         Fish fish = new Fish("Test", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
@@ -119,7 +120,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRecalculateCleanlinessMultipleFish() {
+    void testRecalculateCleanlinessMultipleFish() throws TooManyFish {
         Fish fish1 = new Fish("Fish1", random);
         Fish fish2 = new Fish("Fish2", random);
         user1.addFish(fish1);
@@ -158,7 +159,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRecalculateCleanlinessWithLargerFish() {
+    void testRecalculateCleanlinessWithLargerFish() throws TooManyFish {
         Fish fish = new Fish("Growing", random);
         fish.grow();
         fish.grow(); // Size = 2
