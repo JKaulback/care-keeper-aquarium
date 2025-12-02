@@ -54,7 +54,7 @@ public class Fish {
         this.soilRate = 0.1;
     }
 
-    // --- GETTERS ---
+    // --- ACCESSORS ---
     public int getId() { return this.id; }
     
     public String getName() { return this.name; }
@@ -69,9 +69,9 @@ public class Fish {
 
     public double getSoilRate() { return this.soilRate; }
 
-    public boolean isDead() {
-        return this.health <= 0;      
-    }
+    public boolean isDead() { return this.health <= 0; }
+
+    public int getPointsWorth() { return this.size; }
 
     // --- MODIFIERS ---
     public boolean changeName(String newName) {
@@ -88,15 +88,19 @@ public class Fish {
     }
 
     public void grow() {
-        this.age++;
-        if (this.age >= this.size && this.health >= 50) {
-            this.age = 0;
-            this.size++;
+        if (this.health >= 50) {
+            this.age++;
+            if (this.age > this.size) {
+                this.age = 0;
+                this.size++;
+            }
         }
     }
 
     public void feed(int food) {
         this.health += food;
+        if (this.health > 100)
+            this.health = 100;
     }
 
 }
