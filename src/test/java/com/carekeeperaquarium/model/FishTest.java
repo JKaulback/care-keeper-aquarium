@@ -32,7 +32,8 @@ class FishTest {
         Fish fish1 = new Fish("Fish1");
         Fish fish2 = new Fish("Fish2");
         assertNotEquals(fish1.getId(), fish2.getId());
-        assertTrue(fish2.getId() > fish1.getId());
+        assertNotNull(fish1.getId());
+        assertNotNull(fish2.getId());
     }
 
     @Test
@@ -123,10 +124,10 @@ class FishTest {
         Fish sameFish = fish;
         Fish differentFish = new Fish("Other");
         
-        assertTrue(fish.equals(sameFish));
-        assertFalse(fish.equals(differentFish));
-        assertFalse(fish.equals(null));
-        assertFalse(fish.equals("Not a fish"));
+        assertEquals(fish, sameFish);
+        assertNotEquals(fish, differentFish);
+        assertNotEquals(fish, null);
+        assertNotEquals(fish, "Not a fish");
     }
 
     @Test

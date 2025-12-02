@@ -1,6 +1,7 @@
 package com.carekeeperaquarium.model;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.carekeeperaquarium.exception.FishNotFound;
 import com.carekeeperaquarium.exception.InsufficientPoints;
@@ -62,15 +63,15 @@ public class UserProfile {
             this.ownedFishes.add(newFish);
     }
 
-    public Fish getFish(int id) throws FishNotFound {
+    public Fish getFish(UUID id) throws FishNotFound {
         for (Fish fish : ownedFishes) {
-            if (fish.getId() == id)
+            if (fish.getId().equals(id))
                 return fish;
         }
         throw new FishNotFound("Fish with id '" + id + "' not found");
     }
 
-    public void removeFish(int id) throws FishNotFound {
+    public void removeFish(UUID id) throws FishNotFound {
         this.ownedFishes.remove(getFish(id));
     }
 

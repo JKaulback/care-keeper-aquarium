@@ -70,7 +70,6 @@ public class AquariumState {
         }
     }
 
-    // For testing purposes only
     protected void reset() {
         this.users.clear();
         this.tankCleanliness = 100;

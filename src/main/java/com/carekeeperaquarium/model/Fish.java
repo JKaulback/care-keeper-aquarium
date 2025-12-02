@@ -1,6 +1,7 @@
 package com.carekeeperaquarium.model;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class Fish {
     private enum Species {
@@ -27,13 +28,16 @@ public class Fish {
             return this.displayName;
         }
     }
-    
-    private static int nextId = 1;
+    //
     private static final Random random = new Random();
     private static final Species[] speciesArray = Species.values();
     private static final int NUMBER_OF_SPECIES = speciesArray.length;
 
-    private final int id;
+    private static final int MAX_HEALTH = 100;
+    private static final int MIN_HEALTH_TO_GROW = 50;
+    private static final int DEFAULT_HUNGER_RATE = 3;
+
+    private final UUID id;
     private String name;
     private final Species species;
     private int health;
@@ -44,18 +48,18 @@ public class Fish {
 
     // --- CONSTRUCTOR ---
     public Fish(String newName) {
-        this.id = Fish.nextId++;
+        this.id = UUID.randomUUID();
         this.name = newName;
         this.species = speciesArray[random.nextInt(NUMBER_OF_SPECIES)];
-        this.health = 100;
-        this.hungerRate = 3;
+        this.health = MAX_HEALTH;
+        this.hungerRate = DEFAULT_HUNGER_RATE;
         this.age = 0;
         this.size = 1;
         this.soilRate = 0.1;
     }
 
     // --- ACCESSORS ---
-    public int getId() { return this.id; }
+    public UUID getId() { return this.id; }
     
     public String getName() { return this.name; }
     
@@ -88,7 +92,7 @@ public class Fish {
     }
 
     public void grow() {
-        if (this.health >= 50) {
+        if (this.health >= MIN_HEALTH_TO_GROW) {
             this.age++;
             if (this.age > this.size) {
                 this.age = 0;
@@ -99,8 +103,21 @@ public class Fish {
 
     public void feed(int food) {
         this.health += food;
-        if (this.health > 100)
-            this.health = 100;
+        if (this.health > MAX_HEALTH)
+            this.health = MAX_HEALTH;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Fish otherFish = (Fish) obj;
+        return this.id.equals(otherFish.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
 }

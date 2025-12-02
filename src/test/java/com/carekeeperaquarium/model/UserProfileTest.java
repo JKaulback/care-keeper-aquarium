@@ -69,7 +69,7 @@ class UserProfileTest {
     @Test
     void testGetFishByIdThrowsException() {
         assertThrows(FishNotFound.class, () -> {
-            profile.getFish(999);
+            profile.getFish(java.util.UUID.randomUUID());
         });
     }
 
@@ -86,7 +86,7 @@ class UserProfileTest {
     @Test
     void testRemoveFishThrowsException() {
         assertThrows(FishNotFound.class, () -> {
-            profile.removeFish(999);
+            profile.removeFish(java.util.UUID.randomUUID());
         });
     }
 

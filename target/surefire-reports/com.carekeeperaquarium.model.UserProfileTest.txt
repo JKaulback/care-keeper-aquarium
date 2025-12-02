@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.carekeeperaquarium.model.UserProfileTest
 -------------------------------------------------------------------------------
-Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.066 s -- in com.carekeeperaquarium.model.UserProfileTest
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 s -- in com.carekeeperaquarium.model.UserProfileTest

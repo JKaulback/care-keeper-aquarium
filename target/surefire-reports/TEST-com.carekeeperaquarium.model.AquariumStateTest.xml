@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.carekeeperaquarium.model.AquariumStateTest" time="0.208" tests="14" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.carekeeperaquarium.model.AquariumStateTest" time="0.117" tests="14" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CA"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
-    <property name="sun.java.command" value="C:\Users\jtkau\AppData\Local\Temp\surefire7907479198347585735\surefirebooter-20251202170302395_3.jar C:\Users\jtkau\AppData\Local\Temp\surefire7907479198347585735 2025-12-02T17-03-02_031-jvmRun1 surefire-20251202170302395_1tmp surefire_0-20251202170302395_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\jtkau\AppData\Local\Temp\surefire6751899483934867430\surefirebooter-20251202180411875_3.jar C:\Users\jtkau\AppData\Local\Temp\surefire6751899483934867430 2025-12-02T18-04-11_741-jvmRun1 surefire-20251202180411875_1tmp surefire_0-20251202180411875_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\jtkau\NSCC\Year 2\Fall\PROG2200\Final Project\carekeeperaquarium\target\test-classes;C:\Users\jtkau\NSCC\Year 2\Fall\PROG2200\Final Project\carekeeperaquarium\target\classes;C:\Users\jtkau\.m2\repository\org\jline\jline\3.21.0\jline-3.21.0.jar;C:\Users\jtkau\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;C:\Users\jtkau\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.3\junit-jupiter-5.9.3.jar;C:\Users\jtkau\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\jtkau\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\jtkau\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\jtkau\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\jtkau\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\jtkau\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\jtkau\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\jtkau\AppData\Local\Temp\surefire7907479198347585735\surefirebooter-20251202170302395_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\jtkau\AppData\Local\Temp\surefire6751899483934867430\surefirebooter-20251202180411875_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.4+8-LTS-274"/>
@@ -58,18 +58,18 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testGetUsersReturnsCopy" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.074"/>
-  <testcase name="testCleanTankMaxCap" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.006"/>
-  <testcase name="testGetUserByName" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.003"/>
-  <testcase name="testAddUser" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.004"/>
-  <testcase name="testRecalculateCleanlinessWithFish" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.006"/>
-  <testcase name="testCleanTank" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.004"/>
-  <testcase name="testRecalculateCleanlinessWithLargerFish" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.003"/>
-  <testcase name="testRecalculateCleanlinessMinimumZero" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.004"/>
-  <testcase name="testRemoveUser" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.002"/>
+  <testcase name="testGetUsersReturnsCopy" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.022"/>
+  <testcase name="testCleanTankMaxCap" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.003"/>
+  <testcase name="testGetUserByName" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.002"/>
+  <testcase name="testAddUser" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
+  <testcase name="testRecalculateCleanlinessWithFish" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.052"/>
+  <testcase name="testCleanTank" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
+  <testcase name="testRecalculateCleanlinessWithLargerFish" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.002"/>
+  <testcase name="testRecalculateCleanlinessMinimumZero" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
+  <testcase name="testRemoveUser" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
   <testcase name="testRecalculateCleanlinessNoUsers" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
-  <testcase name="testRecalculateCleanlinessStopsAtZero" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.002"/>
-  <testcase name="testRecalculateCleanlinessMultipleFish" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.003"/>
-  <testcase name="testGetUserThrowsException" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.006"/>
-  <testcase name="testConstructor" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.003"/>
+  <testcase name="testRecalculateCleanlinessStopsAtZero" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
+  <testcase name="testRecalculateCleanlinessMultipleFish" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.001"/>
+  <testcase name="testGetUserThrowsException" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.002"/>
+  <testcase name="testConstructor" classname="com.carekeeperaquarium.model.AquariumStateTest" time="0.002"/>
 </testsuite>
