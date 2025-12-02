@@ -7,7 +7,7 @@ import com.carekeeperaquarium.exception.UserNotFound;
 public class AquariumState {
     private static AquariumState instance;
 
-    private ArrayList<UserProfile> users;
+    private final ArrayList<UserProfile> users;
     private double tankCleanliness;
 
 

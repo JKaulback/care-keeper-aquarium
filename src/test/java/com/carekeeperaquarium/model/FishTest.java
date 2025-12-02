@@ -1,19 +1,24 @@
 package com.carekeeperaquarium.model;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class FishTest {
     private Fish fish;
+    private Random random;
 
     @BeforeEach
     void setUp() {
-        fish = new Fish("Nemo");
+        random = new Random();
+        fish = new Fish("Nemo", random);
     }
 
     @Test
@@ -29,8 +34,8 @@ class FishTest {
 
     @Test
     void testGetId() {
-        Fish fish1 = new Fish("Fish1");
-        Fish fish2 = new Fish("Fish2");
+        Fish fish1 = new Fish("Fish1", random);
+        Fish fish2 = new Fish("Fish2", random);
         assertNotEquals(fish1.getId(), fish2.getId());
         assertNotNull(fish1.getId());
         assertNotNull(fish2.getId());
@@ -38,11 +43,16 @@ class FishTest {
 
     @Test
     void testChangeName() {
-        assertTrue(fish.changeName("Dory"));
+        fish.changeName("Dory");
         assertEquals("Dory", fish.getName());
-        
-        assertFalse(fish.changeName("Dory"));
-        assertEquals("Dory", fish.getName());
+    }
+
+    @Test
+    void testChangeNameToSameThrowsException() {
+        fish.changeName("Dory");
+        assertThrows(IllegalArgumentException.class, () -> {
+            fish.changeName("Dory");
+        });
     }
 
     @Test
@@ -122,7 +132,7 @@ class FishTest {
     @Test
     void testEquals() {
         Fish sameFish = fish;
-        Fish differentFish = new Fish("Other");
+        Fish differentFish = new Fish("Other", random);
         
         assertEquals(fish, sameFish);
         assertNotEquals(fish, differentFish);
@@ -132,10 +142,60 @@ class FishTest {
 
     @Test
     void testHashCode() {
-        Fish fish1 = new Fish("Fish1");
-        Fish fish2 = new Fish("Fish2");
+        Fish fish1 = new Fish("Fish1", random);
+        Fish fish2 = new Fish("Fish2", random);
         
         assertNotEquals(fish1.hashCode(), fish2.hashCode());
         assertEquals(fish1.hashCode(), fish1.hashCode());
+    }
+
+    @Test
+    void testConstructorWithNullName() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Fish(null, random);
+        });
+    }
+
+    @Test
+    void testConstructorWithEmptyName() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Fish("", random);
+        });
+    }
+
+    @Test
+    void testConstructorWithBlankName() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Fish("   ", random);
+        });
+    }
+
+    @Test
+    void testConstructorWithTooLongName() {
+        String longName = "a".repeat(51);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Fish(longName, random);
+        });
+    }
+
+    @Test
+    void testConstructorTrimsName() {
+        Fish fishWithSpaces = new Fish("  Nemo  ", random);
+        assertEquals("Nemo", fishWithSpaces.getName());
+    }
+
+    @Test
+    void testChangeNameWithInvalidName() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            fish.changeName(null);
+        });
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            fish.changeName("");
+        });
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            fish.changeName("   ");
+        });
     }
 }

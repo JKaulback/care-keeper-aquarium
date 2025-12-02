@@ -6,15 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import com.carekeeperaquarium.exception.UserNotFound;
 
 class AquariumStateTest {
     private AquariumState aquarium;
     private UserProfile user1;
     private UserProfile user2;
+    private Random random;
 
     @BeforeEach
     void setUp() {
+        random = new Random();
         aquarium = AquariumState.getAquarium();
         aquarium.reset(); // Reset state before each test
         user1 = new UserProfile("User1");
@@ -102,7 +106,7 @@ class AquariumStateTest {
 
     @Test
     void testRecalculateCleanlinessWithFish() {
-        Fish fish = new Fish("Test");
+        Fish fish = new Fish("Test", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
         
@@ -116,8 +120,8 @@ class AquariumStateTest {
 
     @Test
     void testRecalculateCleanlinessMultipleFish() {
-        Fish fish1 = new Fish("Fish1");
-        Fish fish2 = new Fish("Fish2");
+        Fish fish1 = new Fish("Fish1", random);
+        Fish fish2 = new Fish("Fish2", random);
         user1.addFish(fish1);
         user1.addFish(fish2);
         aquarium.addUser(user1);
@@ -155,7 +159,7 @@ class AquariumStateTest {
 
     @Test
     void testRecalculateCleanlinessWithLargerFish() {
-        Fish fish = new Fish("Growing");
+        Fish fish = new Fish("Growing", random);
         fish.grow();
         fish.grow(); // Size = 2
         

@@ -5,15 +5,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.carekeeperaquarium.exception.FishNotFound;
 import com.carekeeperaquarium.exception.InsufficientPoints;
 
 class UserProfileTest {
     private UserProfile profile;
+    private Random random;
 
     @BeforeEach
     void setUp() {
+        random = new Random();
         profile = new UserProfile("TestUser");
     }
 
@@ -28,7 +31,7 @@ class UserProfileTest {
     @Test
     void testParameterizedConstructor() {
         ArrayList<Fish> fishList = new ArrayList<>();
-        fishList.add(new Fish("Fish1"));
+        fishList.add(new Fish("Fish1", random));
         
         UserProfile customProfile = new UserProfile("Custom", 500, fishList);
         assertEquals("Custom", customProfile.getUserName());
@@ -47,7 +50,7 @@ class UserProfileTest {
 
     @Test
     void testAddFish() {
-        Fish fish = new Fish("Nemo");
+        Fish fish = new Fish("Nemo", random);
         profile.addFish(fish);
         
         assertEquals(1, profile.getNumberOfFishOwned());
@@ -55,8 +58,8 @@ class UserProfileTest {
 
     @Test
     void testGetFishById() throws FishNotFound {
-        Fish fish1 = new Fish("Fish1");
-        Fish fish2 = new Fish("Fish2");
+        Fish fish1 = new Fish("Fish1", random);
+        Fish fish2 = new Fish("Fish2", random);
         
         profile.addFish(fish1);
         profile.addFish(fish2);
@@ -75,7 +78,7 @@ class UserProfileTest {
 
     @Test
     void testRemoveFish() throws FishNotFound {
-        Fish fish = new Fish("ToRemove");
+        Fish fish = new Fish("ToRemove", random);
         profile.addFish(fish);
         assertEquals(1, profile.getNumberOfFishOwned());
         
@@ -92,7 +95,7 @@ class UserProfileTest {
 
     @Test
     void testGetFishReturnsCopy() {
-        Fish fish = new Fish("Test");
+        Fish fish = new Fish("Test", random);
         profile.addFish(fish);
         
         ArrayList<Fish> fishList = profile.getFish();
@@ -111,7 +114,7 @@ class UserProfileTest {
 
     @Test
     void testIncrementPointsWithFish() {
-        Fish fish = new Fish("Test");
+        Fish fish = new Fish("Test", random);
         profile.addFish(fish);
         
         int initialPoints = profile.getPoints();

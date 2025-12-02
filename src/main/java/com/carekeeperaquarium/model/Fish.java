@@ -28,8 +28,6 @@ public class Fish {
             return this.displayName;
         }
     }
-    //
-    private static final Random random = new Random();
     private static final Species[] speciesArray = Species.values();
     private static final int NUMBER_OF_SPECIES = speciesArray.length;
 
@@ -47,9 +45,10 @@ public class Fish {
     private final double soilRate;
 
     // --- CONSTRUCTOR ---
-    public Fish(String newName) {
+    public Fish(String newName, Random random) {
+        validateName(newName);
         this.id = UUID.randomUUID();
-        this.name = newName;
+        this.name = newName.trim();
         this.species = speciesArray[random.nextInt(NUMBER_OF_SPECIES)];
         this.health = MAX_HEALTH;
         this.hungerRate = DEFAULT_HUNGER_RATE;
@@ -78,11 +77,11 @@ public class Fish {
     public int getPointsWorth() { return this.size; }
 
     // --- MODIFIERS ---
-    public boolean changeName(String newName) {
+    public void changeName(String newName) {
+        validateName(newName);
         if (this.name.equals(newName))
-            return false;
+            throw new IllegalArgumentException("New fish name can not be the same as old name");
         this.name = newName;
-        return true;
     }
 
     public void takeDamage() {
@@ -102,9 +101,11 @@ public class Fish {
     }
 
     public void feed(int food) {
-        this.health += food;
-        if (this.health > MAX_HEALTH)
-            this.health = MAX_HEALTH;
+        if (food > 0) {
+            this.health += food;
+            if (this.health > MAX_HEALTH)
+                this.health = MAX_HEALTH;
+        }
     }
 
     @Override
@@ -120,4 +121,23 @@ public class Fish {
         return id.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+            "ID: %s, Name: %s, Species: %s, Health: %d/%d, Age: %d" +
+            ", Size: %d, Hunger Rate: %d, Soil Rate: %.2f", 
+            this.id.toString(), this.name, this.getSpecies(),this.health, 
+            Fish.MAX_HEALTH, this.age, this.size, this.hungerRate, this.soilRate
+            );
+    }
+
+    // --- HELPERS ---
+    private void validateName(String newName) throws IllegalArgumentException {
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("Fish name cannot be null or empty");
+        }
+        if (newName.trim().length() > 50) {
+            throw new IllegalArgumentException("Fish name cannot exceed 50 characters");
+        }
+    }
 }
