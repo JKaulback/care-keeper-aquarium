@@ -32,8 +32,10 @@ public class Fish {
     private static final int NUMBER_OF_SPECIES = speciesArray.length;
 
     private static final int MAX_HEALTH = 100;
+    private static final int MAX_SIZE = 10;
     private static final int MIN_HEALTH_TO_GROW = 50;
     private static final int DEFAULT_HUNGER_RATE = 3;
+    private static final double DEFAULT_SOIL_RATE = 0.1;
 
     private final UUID id;
     private String name;
@@ -54,7 +56,7 @@ public class Fish {
         this.hungerRate = DEFAULT_HUNGER_RATE;
         this.age = 0;
         this.size = 1;
-        this.soilRate = 0.1;
+        this.soilRate = DEFAULT_SOIL_RATE;
     }
 
     // --- ACCESSORS ---
@@ -93,7 +95,7 @@ public class Fish {
     public void grow() {
         if (this.health >= MIN_HEALTH_TO_GROW) {
             this.age++;
-            if (this.age > this.size) {
+            if (this.age > this.size && this.size < Fish.MAX_SIZE) {
                 this.age = 0;
                 this.size++;
             }
@@ -101,11 +103,12 @@ public class Fish {
     }
 
     public void feed(int food) {
-        if (food > 0) {
-            this.health += food;
-            if (this.health > MAX_HEALTH)
-                this.health = MAX_HEALTH;
+        if (food <= 0) {
+            throw new IllegalArgumentException("Food amount must be positive");
         }
+        this.health += food;
+        if (this.health > MAX_HEALTH)
+            this.health = MAX_HEALTH;
     }
 
     @Override

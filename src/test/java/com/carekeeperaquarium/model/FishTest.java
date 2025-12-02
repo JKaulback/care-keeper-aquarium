@@ -94,6 +94,20 @@ class FishTest {
     }
 
     @Test
+    void testFeedWithZeroThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            fish.feed(0);
+        });
+    }
+
+    @Test
+    void testFeedWithNegativeThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            fish.feed(-5);
+        });
+    }
+
+    @Test
     void testGrowWhenHealthy() {
         fish.grow();
         assertEquals(1, fish.getAge());
@@ -127,6 +141,25 @@ class FishTest {
         fish.grow();
         fish.grow();
         assertEquals(2, fish.getPointsWorth());
+    }
+
+    @Test
+    void testGrowStopsAtMaxSize() {
+        // Grow fish to max size (10)
+        // Each grow call increments age, and when age > size, size increases by 1
+        // So we need size increments from 1 to 10 = 9 growth cycles
+        // Each cycle needs (size + 1) grow calls
+        for (int i = 0; i < 60; i++) {
+            fish.grow();
+        }
+        
+        assertEquals(10, fish.getSize());
+        
+        // Try to grow beyond max
+        for (int i = 0; i < 10; i++) {
+            fish.grow();
+        }
+        assertEquals(10, fish.getSize());
     }
 
     @Test
@@ -197,5 +230,16 @@ class FishTest {
         assertThrows(IllegalArgumentException.class, () -> {
             fish.changeName("   ");
         });
+    }
+
+    @Test
+    void testToString() {
+        String result = fish.toString();
+        
+        assertNotNull(result);
+        assertTrue(result.contains("Nemo"));
+        assertTrue(result.contains("Health: 100/100"));
+        assertTrue(result.contains("Size: 1"));
+        assertTrue(result.contains("Age: 0"));
     }
 }

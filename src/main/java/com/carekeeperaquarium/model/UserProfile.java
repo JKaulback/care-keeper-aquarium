@@ -35,6 +35,17 @@ public class UserProfile {
 
     public int getNumberOfFishOwned() { return this.ownedFishes.size(); }
 
+    @Override
+    public String toString() {
+        String userString = String.format("User: %s, Points: %d\nFish:\n");
+        
+        for (Fish fish : ownedFishes) {
+            userString += fish.toString() + "\n";
+        }
+        
+        return userString;
+    }
+
     // --- MODIFIERS ---
     public boolean changeUserName(String newUserName) {
         if (this.userName.equals(newUserName))
