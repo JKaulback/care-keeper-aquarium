@@ -15,7 +15,8 @@ class AquariumStateTest {
 
     @BeforeEach
     void setUp() {
-        aquarium = new AquariumState();
+        aquarium = AquariumState.getAquarium();
+        aquarium.reset(); // Reset state before each test
         user1 = new UserProfile("User1");
         user2 = new UserProfile("User2");
     }

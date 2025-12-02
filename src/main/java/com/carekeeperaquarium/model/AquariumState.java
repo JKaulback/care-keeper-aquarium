@@ -5,14 +5,24 @@ import java.util.ArrayList;
 import com.carekeeperaquarium.exception.UserNotFound;
 
 public class AquariumState {
+    private static AquariumState instance;
+
     private ArrayList<UserProfile> users;
     private double tankCleanliness;
 
 
     // --- CONSTRUCTOR ---
-    public AquariumState() {
+    private AquariumState() {
       this.users = new ArrayList<>();
       this.tankCleanliness = 100;  
+    }
+
+    public static AquariumState getAquarium() {
+        if (instance == null) {
+            instance = new AquariumState();
+        }
+
+        return instance;
     }
 
     // --- ACCESSORS ---
@@ -58,6 +68,12 @@ public class AquariumState {
         if (this.tankCleanliness > 100) {
             this.tankCleanliness = 100;
         }
+    }
+
+    // For testing purposes only
+    protected void reset() {
+        this.users.clear();
+        this.tankCleanliness = 100;
     }
 
 }
