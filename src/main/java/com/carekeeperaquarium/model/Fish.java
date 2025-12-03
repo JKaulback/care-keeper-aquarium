@@ -106,6 +106,9 @@ public class Fish {
         if (food <= 0) {
             throw new IllegalArgumentException("Food amount must be positive");
         }
+        if (this.isDead()) {
+            throw new IllegalStateException("Cannot feed a dead fish");
+        }
         this.health += food;
         if (this.health > MAX_HEALTH)
             this.health = MAX_HEALTH;

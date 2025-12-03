@@ -108,6 +108,19 @@ class FishTest {
     }
 
     @Test
+    void testFeedDeadFishThrowsException() {
+        // Kill the fish by reducing health to 0
+        for (int i = 0; i < 34; i++) {
+            fish.processHunger();
+        }
+        assertTrue(fish.isDead());
+        
+        assertThrows(IllegalStateException.class, () -> {
+            fish.feed(10);
+        });
+    }
+
+    @Test
     void testGrowWhenHealthy() {
         fish.grow();
         assertEquals(1, fish.getAge());
