@@ -29,7 +29,7 @@ class UserProfileTest {
     @Test
     void testDefaultConstructor() {
         assertNotNull(profile);
-        assertEquals("TestUser", profile.getUserName());
+        assertEquals("TestUser", profile.getUsername());
         assertEquals(100, profile.getPoints());
         assertEquals(0, profile.getNumberOfFishOwned());
     }
@@ -40,22 +40,22 @@ class UserProfileTest {
         fishList.add(new Fish("Fish1", random));
         
         UserProfile customProfile = new UserProfile("Custom", 500, fishList);
-        assertEquals("Custom", customProfile.getUserName());
+        assertEquals("Custom", customProfile.getUsername());
         assertEquals(500, customProfile.getPoints());
         assertEquals(1, customProfile.getNumberOfFishOwned());
     }
 
     @Test
-    void testChangeUserName() {
-        profile.changeUserName("NewName");
-        assertEquals("NewName", profile.getUserName());
+    void testChangeUsername() {
+        profile.changeUsername("NewName");
+        assertEquals("NewName", profile.getUsername());
     }
 
     @Test
-    void testChangeUserNameToSameThrowsException() {
-        profile.changeUserName("NewName");
+    void testChangeUsernameToSameThrowsException() {
+        profile.changeUsername("NewName");
         assertThrows(IllegalArgumentException.class, () -> {
-            profile.changeUserName("NewName");
+            profile.changeUsername("NewName");
         });
     }
 

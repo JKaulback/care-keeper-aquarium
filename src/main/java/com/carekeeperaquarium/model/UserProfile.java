@@ -8,28 +8,28 @@ import com.carekeeperaquarium.exception.InsufficientPoints;
 import com.carekeeperaquarium.exception.TooManyFish;
 
 public class UserProfile {
-    private String userName;
+    private String username;
     private int points;
     private final ArrayList<Fish> ownedFishes;
     
     private static final int MAX_FISH = 10;
 
     // --- CONSTRUCTORS ---
-    public UserProfile(String userName) {
-        validateUserName(userName);
-        this.userName = userName.trim();
+    public UserProfile(String username) {
+        validateUsername(username);
+        this.username = username.trim();
         this.points = 100;
         ownedFishes = new ArrayList<>();
     }
 
-    public UserProfile(String userNameLoaded, int pointsLoaded, ArrayList<Fish> ownedFishesLoaded) {
-        validateUserName(userNameLoaded);
+    public UserProfile(String usernameLoaded, int pointsLoaded, ArrayList<Fish> ownedFishesLoaded) {
+        validateUsername(usernameLoaded);
         if (pointsLoaded < 0)
             throw new IllegalArgumentException("Negative points during user profile initialization");
         if (ownedFishesLoaded.size() > MAX_FISH)
             throw new IllegalArgumentException("Too many fish during initialization: " + ownedFishesLoaded.size());
         
-        this.userName = userNameLoaded.trim();
+        this.username = usernameLoaded.trim();
         this.points = pointsLoaded;
         this.ownedFishes = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class UserProfile {
     }
 
     // --- ACCESSORS ---
-    public String getUserName() { return this.userName; }
+    public String getUsername() { return this.username; }
 
     public int getPoints() { return this.points; }
 
@@ -84,7 +84,7 @@ public class UserProfile {
     public String toString() {
         StringBuilder userString = new StringBuilder();
         userString.append(String.format(
-            "User: %s, Points: %d\nFish:\n", this.userName, this.points));
+            "User: %s, Points: %d\nFish:\n", this.username, this.points));
         
         for (Fish fish : ownedFishes) {
             userString.append(fish.toString()).append("\n");
@@ -94,11 +94,11 @@ public class UserProfile {
     }
 
     // --- MODIFIERS ---
-    public void changeUserName(String newUserName) {
-        validateUserName(newUserName);
-        if (this.userName.equals(newUserName))
+    public void changeUsername(String newUsername) {
+        validateUsername(newUsername);
+        if (this.username.equals(newUsername))
             throw new IllegalArgumentException("New user name can not be the same as old name");
-        this.userName = newUserName;
+        this.username = newUsername.trim();
     }
 
     public void incrementPoints() {
@@ -143,20 +143,20 @@ public class UserProfile {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         UserProfile other = (UserProfile) obj;
-        return userName.equals(other.userName);
+        return username.equals(other.username);
     }
 
     @Override
     public int hashCode() {
-        return userName.hashCode();
+        return username.hashCode();
     }
 
     // --- HELPERS ---
-    private void validateUserName(String newUserName) throws IllegalArgumentException {
-        if (newUserName == null || newUserName.isBlank()) {
+    private void validateUsername(String newUsername) throws IllegalArgumentException {
+        if (newUsername == null || newUsername.isBlank()) {
             throw new IllegalArgumentException("User name cannot be null or empty");
         }
-        if (newUserName.trim().length() > 50) {
+        if (newUsername.trim().length() > 50) {
             throw new IllegalArgumentException("User name cannot exceed 50 characters");
         }
     }

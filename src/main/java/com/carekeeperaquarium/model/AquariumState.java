@@ -37,11 +37,11 @@ public class AquariumState {
 
     public synchronized double getTankCleanliness() { return this.tankCleanliness; }
 
-    public synchronized UserProfile getUser(String userName) throws UserNotFound {
-        if (userName == null || userName.trim().isEmpty())
+    public synchronized UserProfile getUser(String Username) throws UserNotFound {
+        if (Username == null || Username.trim().isEmpty())
             throw new IllegalArgumentException("Username cannot be null or empty");
-        if (users.containsKey(userName)) {
-            return users.get(userName);
+        if (users.containsKey(Username)) {
+            return users.get(Username);
         }
         throw new UserNotFound("User not logged in");
     }
@@ -57,15 +57,15 @@ public class AquariumState {
     public synchronized void addUser(UserProfile user) {
         if (user == null)
             throw new IllegalArgumentException("Cannot add null user to aquarium");
-        if (users.containsKey(user.getUserName()))
+        if (users.containsKey(user.getUsername()))
             throw new IllegalArgumentException("User already exists");
-        users.put(user.getUserName(), user);
+        users.put(user.getUsername(), user);
     }
 
     public synchronized boolean removeUser(UserProfile user) {
         if (user == null)
             throw new IllegalArgumentException("Cannot remove null user from aquarium");
-        return users.remove(user.getUserName()) != null;
+        return users.remove(user.getUsername()) != null;
     }
 
     public synchronized void recalculateCleanliness() {
@@ -110,8 +110,8 @@ public class AquariumState {
         this.clampCleanliness();
     }
 
-    public synchronized void feedFish(String userName, UUID fishId, int foodAmount) throws UserNotFound, FishNotFound {
-        UserProfile user = getUser(userName);
+    public synchronized void feedFish(String username, UUID fishId, int foodAmount) throws UserNotFound, FishNotFound {
+        UserProfile user = getUser(username);
         Fish fish = user.getFishById(fishId);
         fish.feed(foodAmount);
     }

@@ -60,7 +60,7 @@ class AquariumStateTest {
         aquarium.addUser(user2);
         
         UserProfile retrieved = aquarium.getUser("User1");
-        assertEquals("User1", retrieved.getUserName());
+        assertEquals("User1", retrieved.getUsername());
     }
 
     @Test

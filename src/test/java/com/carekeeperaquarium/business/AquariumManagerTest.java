@@ -60,7 +60,7 @@ class AquariumManagerTest {
         manager.addUser(user);
         
         UserProfile retrieved = manager.getUser("TestUser");
-        assertEquals("TestUser", retrieved.getUserName());
+        assertEquals("TestUser", retrieved.getUsername());
     }
 
     @Test
