@@ -207,7 +207,7 @@ class UserProfileTest {
         
         // Kill the fish
         for (int i = 0; i < 34; i++) {
-            fish.takeDamage();
+            fish.processHunger();
         }
         
         assertTrue(profile.hasDeadFish());

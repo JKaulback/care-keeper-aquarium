@@ -61,27 +61,27 @@ class FishTest {
         
         // Reduce health to 0
         for (int i = 0; i < 34; i++) {
-            fish.takeDamage();
+            fish.processHunger();
         }
         assertTrue(fish.isDead());
     }
 
     @Test
-    void testTakeDamage() {
+    void testProcessHunger() {
         int initialHealth = fish.getHealth();
-        fish.takeDamage();
+        fish.processHunger();
         assertEquals(initialHealth - 3, fish.getHealth());
         
         // Test health doesn't go below 0
         for (int i = 0; i < 50; i++) {
-            fish.takeDamage();
+            fish.processHunger();
         }
         assertEquals(0, fish.getHealth());
     }
 
     @Test
     void testFeed() {
-        fish.takeDamage();
+        fish.processHunger();
         int healthAfterDamage = fish.getHealth();
         fish.feed(1);
         assertEquals(healthAfterDamage + 1, fish.getHealth());
@@ -123,7 +123,7 @@ class FishTest {
     void testGrowWhenUnhealthy() {
         // Reduce health below 50
         for (int i = 0; i < 18; i++) {
-            fish.takeDamage();
+            fish.processHunger();
         }
         assertTrue(fish.getHealth() < 50);
         

@@ -86,7 +86,7 @@ public class Fish {
         this.name = newName;
     }
 
-    public void takeDamage() {
+    public void processHunger() {
         this.health -= this.hungerRate;
         if (this.health < 0)
             this.health = 0;

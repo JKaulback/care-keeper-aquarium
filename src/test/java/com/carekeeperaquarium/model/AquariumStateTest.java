@@ -3,8 +3,10 @@ package com.carekeeperaquarium.model;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -172,5 +174,149 @@ class AquariumStateTest {
         
         // 1 + (2 * 0.1) = 1.2
         assertEquals(initialCleanliness - 1.2, aquarium.getTankCleanliness(), 0.001);
+    }
+
+    @Test
+    void testAddUserWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            aquarium.addUser(null);
+        });
+    }
+
+    @Test
+    void testAddDuplicateUser() {
+        aquarium.addUser(user1);
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            aquarium.addUser(user1);
+        });
+    }
+
+    @Test
+    void testRemoveUserReturnsTrue() {
+        aquarium.addUser(user1);
+        boolean result = aquarium.removeUser(user1);
+        
+        assertTrue(result);
+        assertEquals(0, aquarium.getUsers().size());
+    }
+
+    @Test
+    void testRemoveUserReturnsFalse() {
+        boolean result = aquarium.removeUser(user1);
+        
+        assertFalse(result);
+    }
+
+    @Test
+    void testRemoveUserWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            aquarium.removeUser(null);
+        });
+    }
+
+    @Test
+    void testGetUserWithNullUsername() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            aquarium.getUser(null);
+        });
+    }
+
+    @Test
+    void testGetUserWithEmptyUsername() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            aquarium.getUser("  ");
+        });
+    }
+
+    @Test
+    void testCleanTankWithNegativeValue() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            aquarium.cleanTank(-10);
+        });
+    }
+
+    @Test
+    void testProcessHunger() throws TooManyFish {
+        Fish fish = new Fish("HungryFish", random);
+        user1.addFish(fish);
+        aquarium.addUser(user1);
+        
+        int initialHealth = fish.getHealth();
+        aquarium.processHunger();
+        
+        assertTrue(fish.getHealth() < initialHealth, "Fish health should decrease after hunger processing");
+    }
+
+    @Test
+    void testProcessFishGrowth() throws TooManyFish {
+        Fish fish = new Fish("GrowingFish", random);
+        user1.addFish(fish);
+        aquarium.addUser(user1);
+        
+        int initialAge = fish.getAge();
+        aquarium.processFishGrowth();
+        
+        assertEquals(initialAge + 1, fish.getAge(), "Fish age should increase after growth processing");
+    }
+
+    @Test
+    void testProcessPointAwards() throws TooManyFish {
+        Fish fish = new Fish("PointFish", random);
+        user1.addFish(fish);
+        aquarium.addUser(user1);
+        
+        int initialPoints = user1.getPoints();
+        aquarium.processPointAwards();
+        
+        assertTrue(user1.getPoints() > initialPoints, "User points should increase after point awards");
+    }
+
+    @Test
+    void testRunIteration() throws TooManyFish {
+        Fish fish = new Fish("TestFish", random);
+        user1.addFish(fish);
+        aquarium.addUser(user1);
+        
+        double initialCleanliness = aquarium.getTankCleanliness();
+        int initialPoints = user1.getPoints();
+        int initialAge = fish.getAge();
+        
+        aquarium.runIteration();
+        
+        // Verify all iteration steps were executed
+        assertTrue(aquarium.getTankCleanliness() < initialCleanliness, "Cleanliness should decrease");
+        assertTrue(user1.getPoints() > initialPoints, "Points should increase");
+        assertEquals(initialAge + 1, fish.getAge(), "Fish age should increase");
+    }
+
+    @Test
+    void testRunIterationWithMultipleUsers() throws TooManyFish {
+        Fish fish1 = new Fish("Fish1", random);
+        Fish fish2 = new Fish("Fish2", random);
+        
+        user1.addFish(fish1);
+        user2.addFish(fish2);
+        
+        aquarium.addUser(user1);
+        aquarium.addUser(user2);
+        
+        int initialPoints1 = user1.getPoints();
+        int initialPoints2 = user2.getPoints();
+        
+        aquarium.runIteration();
+        
+        assertTrue(user1.getPoints() > initialPoints1, "User1 points should increase");
+        assertTrue(user2.getPoints() > initialPoints2, "User2 points should increase");
+    }
+
+    @Test
+    void testRunIterationWithNoUsers() {
+        double initialCleanliness = aquarium.getTankCleanliness();
+        
+        aquarium.runIteration();
+        
+        // Should still decrease by base soil value
+        assertTrue(aquarium.getTankCleanliness() < initialCleanliness);
     }
 }

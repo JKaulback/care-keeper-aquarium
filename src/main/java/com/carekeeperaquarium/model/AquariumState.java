@@ -45,6 +45,13 @@ public class AquariumState {
     }
 
     // --- MODIFIERS ---
+    public void runIteration() {
+        recalculateCleanliness();
+        processHunger();
+        processFishGrowth();
+        processPointAwards();
+    }
+
     public void addUser(UserProfile user) {
         if (user == null)
             throw new IllegalArgumentException("Cannot add null user to aquarium");
@@ -71,7 +78,29 @@ public class AquariumState {
         }
         this.clampCleanliness();
     }
+
+    public void processHunger() {
+        for (UserProfile user : users.values()) {
+            for (Fish fish : user.getFish()) {
+                fish.processHunger();
+            }
+        }
+    }
     
+    public void processFishGrowth() {
+        for (UserProfile user : users.values()) {
+            for (Fish fish : user.getFish()) {
+                fish.grow();
+            }
+        }
+    }
+
+    public void processPointAwards() {
+        for (UserProfile user : users.values()) {
+            user.incrementPoints();
+        }
+    }
+
     public void cleanTank(double cleanValue) {
         if (cleanValue < 0)
             throw new IllegalArgumentException("Clean value cannot be negative");
