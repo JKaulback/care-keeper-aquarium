@@ -53,6 +53,14 @@ public class UserProfile {
 
     public int getMaxFish() { return UserProfile.MAX_FISH; }
 
+    public Fish getFishById(UUID id) throws FishNotFound {
+        for (Fish fish : ownedFishes) {
+            if (fish.getId().equals(id))
+                return fish;
+        }
+        throw new FishNotFound("Fish with id '" + id + "' not found");
+    }
+
     public boolean hasDeadFish() {
         for (Fish fish : ownedFishes) {
             if (fish.isDead()){

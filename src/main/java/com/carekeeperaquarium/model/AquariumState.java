@@ -2,7 +2,9 @@ package com.carekeeperaquarium.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
+import com.carekeeperaquarium.exception.FishNotFound;
 import com.carekeeperaquarium.exception.UserNotFound;
 
 public class AquariumState {
@@ -31,11 +33,11 @@ public class AquariumState {
     }
 
     // --- ACCESSORS ---
-    public ArrayList<UserProfile> getUsers() { return new ArrayList<>(users.values()); }
+    public synchronized ArrayList<UserProfile> getUsers() { return new ArrayList<>(users.values()); }
 
-    public double getTankCleanliness() { return this.tankCleanliness; }
+    public synchronized double getTankCleanliness() { return this.tankCleanliness; }
 
-    public UserProfile getUser(String userName) throws UserNotFound {
+    public synchronized UserProfile getUser(String userName) throws UserNotFound {
         if (userName == null || userName.trim().isEmpty())
             throw new IllegalArgumentException("Username cannot be null or empty");
         if (users.containsKey(userName)) {
@@ -45,14 +47,14 @@ public class AquariumState {
     }
 
     // --- MODIFIERS ---
-    public void runIteration() {
+    public synchronized void runIteration() {
         recalculateCleanliness();
         processHunger();
         processFishGrowth();
         processPointAwards();
     }
 
-    public void addUser(UserProfile user) {
+    public synchronized void addUser(UserProfile user) {
         if (user == null)
             throw new IllegalArgumentException("Cannot add null user to aquarium");
         if (users.containsKey(user.getUserName()))
@@ -60,13 +62,13 @@ public class AquariumState {
         users.put(user.getUserName(), user);
     }
 
-    public boolean removeUser(UserProfile user) {
+    public synchronized boolean removeUser(UserProfile user) {
         if (user == null)
             throw new IllegalArgumentException("Cannot remove null user from aquarium");
         return users.remove(user.getUserName()) != null;
     }
 
-    public void recalculateCleanliness() {
+    public synchronized void recalculateCleanliness() {
         if (this.tankCleanliness > MIN_CLEANLINESS) {
             double tankSoilValue = BASE_SOIL_VALUE;
             for (UserProfile user : users.values()) {
@@ -79,7 +81,7 @@ public class AquariumState {
         this.clampCleanliness();
     }
 
-    public void processHunger() {
+    public synchronized void processHunger() {
         for (UserProfile user : users.values()) {
             for (Fish fish : user.getFish()) {
                 fish.processHunger();
@@ -87,7 +89,7 @@ public class AquariumState {
         }
     }
     
-    public void processFishGrowth() {
+    public synchronized void processFishGrowth() {
         for (UserProfile user : users.values()) {
             for (Fish fish : user.getFish()) {
                 fish.grow();
@@ -95,25 +97,31 @@ public class AquariumState {
         }
     }
 
-    public void processPointAwards() {
+    public synchronized void processPointAwards() {
         for (UserProfile user : users.values()) {
             user.incrementPoints();
         }
     }
 
-    public void cleanTank(double cleanValue) {
+    public synchronized void cleanTank(double cleanValue) {
         if (cleanValue < 0)
             throw new IllegalArgumentException("Clean value cannot be negative");
         this.tankCleanliness += cleanValue;
         this.clampCleanliness();
     }
 
-    protected void reset() {
+    public synchronized void feedFish(String userName, UUID fishId, int foodAmount) throws UserNotFound, FishNotFound {
+        UserProfile user = getUser(userName);
+        Fish fish = user.getFishById(fishId);
+        fish.feed(foodAmount);
+    }
+
+    protected synchronized void reset() {
         this.users.clear();
         this.tankCleanliness = MAX_CLEANLINESS;
     }
 
-    private void clampCleanliness() {
+    private synchronized void clampCleanliness() {
         if (this.tankCleanliness < MIN_CLEANLINESS) this.tankCleanliness = MIN_CLEANLINESS;
         else if (this.tankCleanliness > MAX_CLEANLINESS) this.tankCleanliness = MAX_CLEANLINESS;
     }
