@@ -46,6 +46,10 @@ public class AquariumState {
         throw new UserNotFound("User not logged in");
     }
 
+    public synchronized boolean hasUser(String username) {
+        return users.containsKey(username);
+    }
+
     // --- MODIFIERS ---
     public synchronized void runIteration() {
         recalculateCleanliness();

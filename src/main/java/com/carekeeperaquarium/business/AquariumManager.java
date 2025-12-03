@@ -72,6 +72,10 @@ public class AquariumManager {
         }
     }
 
+    public boolean hasUser(String username) {
+        return executeWithLock(() -> aquariumInstance.hasUser(username));
+    }
+
     // --- MODIFIERS ---
     public void addUser(UserProfile user) {
         executeWithLock(() -> aquariumInstance.addUser(user));
