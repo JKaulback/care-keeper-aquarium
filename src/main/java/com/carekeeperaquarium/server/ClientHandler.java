@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import com.carekeeperaquarium.business.AquariumManager;
+import com.carekeeperaquarium.common.Command;
+import com.carekeeperaquarium.model.UserProfile;
 import com.carekeeperaquarium.model.UserProfile;
 
 public class ClientHandler implements Runnable {
@@ -79,27 +81,27 @@ public class ClientHandler implements Runnable {
             if (clientMessage == null) {
                 break;
             }
-            // Process client messages here
-            if (clientMessage.equalsIgnoreCase("add-fish")) {
-                this.out.println("Feature to add fish is not yet implemented."); // TODO
-            } else if (clientMessage.equalsIgnoreCase("view-fish")) {
-                this.out.println("Feature to view fish is not yet implemented."); // TODO
-            } else if (clientMessage.equalsIgnoreCase("clean-tank")) {
-                this.out.println("Feature to clean tank is not yet implemented."); // TODO
-            } else if (clientMessage.equalsIgnoreCase("view-tank")) {
-                this.out.println(aquariumManager.getAquariumStateSummary());
-            } else if (clientMessage.equalsIgnoreCase("get-fish-fact-general")) {
-                this.out.println("Feature to get general fish facts is not yet implemented."); // TODO
-            } else if (clientMessage.startsWith("fact-")) {
-                this.out.println("Feature to get specific fish facts is not yet implemented."); // TODO
-            } else if (clientMessage.equalsIgnoreCase("change-username")) {
-                this.out.println("Feature to change username not yet implemented."); // TODO
-            } else if (clientMessage.equalsIgnoreCase("quit") || clientMessage.equalsIgnoreCase("exit")) {
-                this.out.println("Goodbye, " + username + "!");
-                break;
-            } else {
-                this.out.println("Unknown command. Please try again.");
-            }
+            
+            // Parse command using enum
+            Command command = Command.fromString(clientMessage);
+            
+            // Process commands using switch
+            switch (command) {
+                case ADD_FISH -> { this.out.println("Feature to add fish is not yet implemented."); } // TODO
+                case VIEW_FISH -> { this.out.println("Feature to view fish is not yet implemented."); } // TODO
+                case FEED_FISH -> { this.out.println("Feature to feed fish is not yet implemented."); } // TODO
+                case REMOVE_FISH -> { this.out.println("Feature to remove fish is not yet implemented."); } // TODO
+                case CLEAN_TANK -> { this.out.println("Feature to clean tank is not yet implemented."); } // TODO
+                case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }
+                case GET_FISH_FACT_GENERAL -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
+                case FACT -> { this.out.println("Feature to get specific fish facts is not yet implemented."); } // TODO
+                case CHANGE_USERNAME -> { this.out.println("Feature to change username not yet implemented."); } // TODO
+                case QUIT -> { 
+                    this.out.println("Goodbye, " + username + "!"); 
+                    return;
+                }
+                default -> { this.out.println("Unknown command. Please try again."); }
+            };
         }
     }
 

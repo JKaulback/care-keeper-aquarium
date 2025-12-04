@@ -1,5 +1,7 @@
 package com.carekeeperaquarium.client;
 
+import com.carekeeperaquarium.common.Command;
+
 public class MenuHandler {
 
     private enum MenuOption {
@@ -50,31 +52,31 @@ public class MenuHandler {
         mainMenu.addItem("Manage Tank", "manage-tank");
         mainMenu.addItem("Get Fish Facts", "fish-facts");
         mainMenu.addItem("Settings", "settings");
-        mainMenu.addItem("Quit", "quit-menu");
+        mainMenu.addItem("Quit", Command.QUIT_MENU.getPrimaryAlias());
         return console.showMenu(mainMenu);
     }
 
     private static String showFishMenu(ConsoleUI console) {
         Menu fishMenu = new Menu("Fish Management Menu");
-        fishMenu.addItem("Add Fish", "add-fish");
-        fishMenu.addItem("View Fish", "view-fish");
-        fishMenu.addItem("Feed Fish", "feed-fish");
-        fishMenu.addItem("Remove Fish", "remove-fish");
+        fishMenu.addItem("Add Fish", Command.ADD_FISH.getPrimaryAlias());
+        fishMenu.addItem("View Fish", Command.VIEW_FISH.getPrimaryAlias());
+        fishMenu.addItem("Feed Fish", Command.FEED_FISH.getPrimaryAlias());
+        fishMenu.addItem("Remove Fish", Command.REMOVE_FISH.getPrimaryAlias());
         fishMenu.addItem("Back to Main Menu", "back");
         return console.showMenu(fishMenu);
     }
 
     private static String showTankMenu(ConsoleUI console) {
         Menu tankMenu = new Menu("Tank Maintenance Menu");
-        tankMenu.addItem("View Tank Status", "view-tank");
-        tankMenu.addItem("Clean Tank", "clean-tank");
+        tankMenu.addItem("View Tank Status", Command.VIEW_TANK.getPrimaryAlias());
+        tankMenu.addItem("Clean Tank", Command.CLEAN_TANK.getPrimaryAlias());
         tankMenu.addItem("Back to Main Menu", "back");
         return console.showMenu(tankMenu);
     }
 
     private static String showFishFactsMenu(ConsoleUI console) {
         Menu fishFactsMenu = new Menu("Fish Facts Menu");
-        fishFactsMenu.addItem("General Fish Facts", "get-fish-fact-general");
+        fishFactsMenu.addItem("General Fish Facts", Command.GET_FISH_FACT_GENERAL.getPrimaryAlias());
         fishFactsMenu.addItem("Specific Fish Facts", "get-fish-fact-specific");
         fishFactsMenu.addItem("Back to Main Menu", "back");
         return console.showMenu(fishFactsMenu);
@@ -108,7 +110,7 @@ public class MenuHandler {
 
     private static String showSettingsMenu(ConsoleUI console) {
         Menu settingsMenu = new Menu("Settings Menu");
-        settingsMenu.addItem("Change Username", "change-username");
+        settingsMenu.addItem("Change Username", Command.CHANGE_USERNAME.getPrimaryAlias());
         settingsMenu.addItem("Back to Main Menu", "back");
         return console.showMenu(settingsMenu);
     }
