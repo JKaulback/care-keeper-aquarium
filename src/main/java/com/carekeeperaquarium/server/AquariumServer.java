@@ -16,16 +16,37 @@ public class AquariumServer {
     public void run() throws IOException {
         ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
 
+        // Register shutdown hook to clean up resources on Ctrl+C
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("\nShutting down server...");
+            try {
+                if (!serverSocket.isClosed()) {
+                    serverSocket.close();
+                }
+                ThreadPoolManager.shutdown();
+                System.out.println("Server shutdown complete.");
+            } catch (IOException e) {
+                System.err.println("Error during shutdown: " + e.getMessage());
+            }
+        }));
         
         System.out.println("Aquarium Server is starting on port " + SERVER_PORT + "...");
         
-        while (true) {
-            ClientHandler clientHandler = new ClientHandler(
-                serverSocket.accept(),
-                aquariumManager
-            );
-            addClient(clientHandler);
-            ThreadPoolManager.getClientExecutor().execute(clientHandler);
+        try {
+            while (true) {
+                ClientHandler clientHandler = new ClientHandler(
+                    serverSocket.accept(),
+                    aquariumManager
+                );
+                addClient(clientHandler);
+                ThreadPoolManager.getClientExecutor().execute(clientHandler);
+            }
+        } catch (IOException e) {
+            if (!serverSocket.isClosed()) {
+                throw e;
+            }
+            // If socket is closed, it's likely due to shutdown hook
+            System.out.println("Server socket closed.");
         }
     }
 

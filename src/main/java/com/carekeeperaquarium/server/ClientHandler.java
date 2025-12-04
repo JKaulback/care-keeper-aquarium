@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import com.carekeeperaquarium.business.AquariumManager;
 import com.carekeeperaquarium.common.Command;
-import com.carekeeperaquarium.model.UserProfile;
+import com.carekeeperaquarium.exception.UserNotFound;
 import com.carekeeperaquarium.model.UserProfile;
 
 public class ClientHandler implements Runnable {
@@ -23,6 +23,7 @@ public class ClientHandler implements Runnable {
         this.aquariumManager = aquariumManager;
     }
 
+    @Override
     public void run() {
         try {
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -101,7 +102,7 @@ public class ClientHandler implements Runnable {
                     return;
                 }
                 default -> { this.out.println("Unknown command. Please try again."); }
-            };
+            }
         }
     }
 
@@ -112,8 +113,8 @@ public class ClientHandler implements Runnable {
                 UserProfile user = aquariumManager.getUser(username);
                 aquariumManager.removeUser(user);
                 System.out.println("User " + username + " has disconnected");
-            } catch (Exception e) {
-                System.out.println("Error during user shutdown: " + e.getMessage());
+            } catch (UserNotFound e) {
+                System.out.println("User " + username + " not found" + e.getMessage());
             }
         }
 
