@@ -76,6 +76,23 @@ public class AquariumManager {
         return executeWithLock(() -> aquariumInstance.hasUser(username));
     }
 
+    public String getAquariumStateSummary() {
+        return executeWithLock(() -> {
+            StringBuilder summary = new StringBuilder();
+            summary.append("Aquarium Cleanliness: ")
+                   .append(String.format("%.2f", aquariumInstance.getTankCleanliness()))
+                   .append("\n");
+            summary.append("Users Online: ").append(aquariumInstance.getUsers().size()).append("\n");
+            for (UserProfile user : aquariumInstance.getUsers()) {
+                summary.append("- ").append(user.getUsername())
+                       .append(" (Points: ").append(user.getPoints())
+                       .append(", Fish Owned: ").append(user.getNumberOfFishOwned())
+                       .append(")\n");
+            }
+            return summary.toString();
+        });
+    }
+
     // --- MODIFIERS ---
     public void addUser(UserProfile user) {
         executeWithLock(() -> aquariumInstance.addUser(user));

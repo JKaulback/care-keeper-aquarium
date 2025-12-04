@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class AquariumClient {
     private static final String SERVER_URL = "localhost";
@@ -13,23 +12,27 @@ public class AquariumClient {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private Scanner scanner;
+    private final ConsoleUI console;
+    private volatile boolean running = true;
+    private volatile boolean loggedIn = false;
+    private volatile boolean pauseMessages = false;
 
-    public AquariumClient() {
-        scanner = new Scanner(System.in);
+    public AquariumClient() throws IOException {
+        console = new ConsoleUI();
     }
 
     public void run() throws IOException {
-        System.out.println("Connecting to Aquarium Server at " + SERVER_URL + ":" + SERVER_PORT + "...");
+        console.println("Connecting to Aquarium Server at " + SERVER_URL + ":" + SERVER_PORT + "...");
         
         socket = new Socket(SERVER_URL, SERVER_PORT);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         
-        System.out.println("Connected to server!");
+        console.println("Connected to server!");
         
         // Start a thread to listen for messages from the server
         Thread listenerThread = new Thread(this::listenForMessages);
+        listenerThread.setDaemon(true);
         listenerThread.start();
         
         // Main thread handles user input
@@ -39,23 +42,44 @@ public class AquariumClient {
     private void listenForMessages() {
         try {
             String message;
-            while ((message = in.readLine()) != null) {
-                System.out.println(message);
+            while (running && (message = in.readLine()) != null) {
+                if (!pauseMessages) {
+                    console.println(message);
+                }
             }
         } catch (IOException e) {
-            System.out.println("Disconnected from server.");
+            if (running) {
+                console.println("Disconnected from server.");
+            }
         }
     }
 
     private void handleUserInput() {
         try {
             String input;
-            while (true) {
-                input = scanner.nextLine();
-                if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
-                    break;
+            while (running) {
+                if (!loggedIn) {
+                    input = console.readLine("Enter username: ");
+                    if (input != null && !input.trim().isEmpty()) {
+                        out.println(input);
+                        loggedIn = true;
+                    }
+                    continue;
                 }
-                out.println(input);
+
+                input = console.readLine("Press enter to open the menu or 'quit' to stop: ");
+                
+                if (input.equalsIgnoreCase("quit"))
+                    break;
+
+                pauseMessages = true;
+                input = MenuHandler.handleMenu(console);
+                pauseMessages = false;
+                
+                if (input.equalsIgnoreCase("quit-menu"))
+                    continue;
+
+                this.out.println(input);
             }
         } finally {
             closeConnection();
@@ -63,12 +87,15 @@ public class AquariumClient {
     }
 
     private void closeConnection() {
+        running = false;
         try {
-            if (scanner != null) scanner.close();
             if (out != null) out.close();
             if (in != null) in.close();
             if (socket != null) socket.close();
-            System.out.println("Connection closed.");
+            if (console != null) {
+                console.println("Connection closed.");
+                console.close();
+            }
         } catch (IOException e) {
             System.err.println("Error closing connection: " + e.getMessage());
         }

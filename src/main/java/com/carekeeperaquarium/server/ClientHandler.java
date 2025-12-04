@@ -23,13 +23,14 @@ public class ClientHandler implements Runnable {
 
     public void run() {
         try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.out = new PrintWriter(socket.getOutputStream(), true);
             // Handle user registration/login
             
             handleLogin();
 
             // Main interaction loop (to be implemented)
+            runMainLoop();
 
             // Close resources on exit
             handleShutdown();
@@ -53,7 +54,6 @@ public class ClientHandler implements Runnable {
     private void handleLogin() throws IOException {
         this.out.println("Welcome to CareKeeper Aquarium!");
         while (true) {
-            this.out.println("Enter username: ");
             username = this.in.readLine();
             // Validate username
             if (validateUsername(username)) {
@@ -70,6 +70,36 @@ public class ClientHandler implements Runnable {
         UserProfile user = new UserProfile(username);
         aquariumManager.addUser(user);
         this.out.println("Login successful! Welcome, " + username + ".");
+        System.out.println("User " + username + " has logged in");
+    }
+
+    private void runMainLoop() throws IOException {
+        while (true) {
+            String clientMessage = in.readLine();
+            if (clientMessage == null) {
+                break;
+            }
+            // Process client messages here
+            if (clientMessage.equalsIgnoreCase("add-fish")) {
+                this.out.println("Feature to add fish is not yet implemented.");
+            } else if (clientMessage.equalsIgnoreCase("view-fish")) {
+                this.out.println("Feature to view fish is not yet implemented.");
+            } else if (clientMessage.equalsIgnoreCase("clean-tank")) {
+                this.out.println("Feature to clean tank is not yet implemented.");
+            } else if (clientMessage.equalsIgnoreCase("view-tank")) {
+                this.out.println(aquariumManager.getAquariumStateSummary());
+            } else if (clientMessage.equalsIgnoreCase("get-fish-fact-general")) {
+                this.out.println("Feature to get general fish facts is not yet implemented.");
+            } else if (clientMessage.startsWith("fact-")) {
+                this.out.println("Feature to get specific fish facts is not yet implemented.");
+            } else if (clientMessage.equalsIgnoreCase("quit") || clientMessage.equalsIgnoreCase("exit")) {
+                this.out.println("Goodbye, " + username + "!");
+                break;
+            } else {
+                this.out.println("Unknown command. Please try again.");
+            }
+        }
+
     }
 
     private void handleShutdown() throws IOException {
@@ -78,7 +108,7 @@ public class ClientHandler implements Runnable {
                 this.out.println("Goodbye, " + username + "!");
                 UserProfile user = aquariumManager.getUser(username);
                 aquariumManager.removeUser(user);
-                System.out.println("User " + username + " has disconnected and been removed from the aquarium.");
+                System.out.println("User " + username + " has disconnected");
             } catch (Exception e) {
                 System.out.println("Error during user shutdown: " + e.getMessage());
             }
