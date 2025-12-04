@@ -1,6 +1,7 @@
 package com.carekeeperaquarium.model;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,10 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.carekeeperaquarium.exception.FishNotFound;
-import com.carekeeperaquarium.exception.InsufficientPoints;
-import com.carekeeperaquarium.exception.TooManyFish;
 
 class UserProfileTest {
     private UserProfile profile;
@@ -60,7 +57,7 @@ class UserProfileTest {
     }
 
     @Test
-    void testAddFish() throws TooManyFish {
+    void testAddFish() {
         Fish fish = new Fish("Nemo", random);
         profile.addFish(fish);
         
@@ -68,7 +65,7 @@ class UserProfileTest {
     }
 
     @Test
-    void testGetFishById() throws FishNotFound, TooManyFish {
+    void testGetFishById() {
         Fish fish1 = new Fish("Fish1", random);
         Fish fish2 = new Fish("Fish2", random);
         
@@ -82,13 +79,13 @@ class UserProfileTest {
 
     @Test
     void testGetFishByIdThrowsException() {
-        assertThrows(FishNotFound.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             profile.getFish(java.util.UUID.randomUUID());
         });
     }
 
     @Test
-    void testRemoveFish() throws FishNotFound, TooManyFish {
+    void testRemoveFish() {
         Fish fish = new Fish("ToRemove", random);
         profile.addFish(fish);
         assertEquals(1, profile.getNumberOfFishOwned());
@@ -99,13 +96,13 @@ class UserProfileTest {
 
     @Test
     void testRemoveFishThrowsException() {
-        assertThrows(FishNotFound.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             profile.removeFish(java.util.UUID.randomUUID());
         });
     }
 
     @Test
-    void testGetFishReturnsCopy() throws TooManyFish {
+    void testGetFishReturnsCopy() {
         Fish fish = new Fish("Test", random);
         profile.addFish(fish);
         
@@ -124,7 +121,7 @@ class UserProfileTest {
     }
 
     @Test
-    void testIncrementPointsWithFish() throws TooManyFish {
+    void testIncrementPointsWithFish() {
         Fish fish = new Fish("Test", random);
         profile.addFish(fish);
         
@@ -136,20 +133,20 @@ class UserProfileTest {
     }
 
     @Test
-    void testSpendPoints() throws InsufficientPoints {
+    void testSpendPoints() {
         profile.spendPoints(50);
         assertEquals(50, profile.getPoints());
     }
 
     @Test
     void testSpendPointsInsufficientThrowsException() {
-        assertThrows(InsufficientPoints.class, () -> {
+        assertThrows(IllegalStateException.class, () -> {
             profile.spendPoints(200);
         });
     }
 
     @Test
-    void testSpendPointsExactAmount() throws InsufficientPoints {
+    void testSpendPointsExactAmount() {
         profile.spendPoints(100);
         assertEquals(0, profile.getPoints());
     }
@@ -169,7 +166,7 @@ class UserProfileTest {
     }
 
     @Test
-    void testAddFishWhenFullThrowsException() throws TooManyFish {
+    void testAddFishWhenFullThrowsException() {
         // Add 10 fish to reach max capacity
         for (int i = 0; i < 10; i++) {
             profile.addFish(new Fish("Fish" + i, random));
@@ -177,13 +174,13 @@ class UserProfileTest {
         
         assertTrue(profile.isFull());
         
-        assertThrows(TooManyFish.class, () -> {
+        assertThrows(IllegalStateException.class, () -> {
             profile.addFish(new Fish("TooMany", random));
         });
     }
 
     @Test
-    void testIsFull() throws TooManyFish {
+    void testIsFull() {
         assertFalse(profile.isFull());
         
         for (int i = 0; i < 10; i++) {
@@ -199,7 +196,7 @@ class UserProfileTest {
     }
 
     @Test
-    void testHasDeadFish() throws TooManyFish {
+    void testHasDeadFish() {
         assertFalse(profile.hasDeadFish());
         
         Fish fish = new Fish("Dying", random);
@@ -266,7 +263,7 @@ class UserProfileTest {
     }
 
     @Test
-    void testToString() throws TooManyFish {
+    void testToString() {
         String result = profile.toString();
         
         assertNotNull(result);

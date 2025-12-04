@@ -6,9 +6,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
-import com.carekeeperaquarium.exception.FishNotFound;
-import com.carekeeperaquarium.exception.UserNotFound;
 import com.carekeeperaquarium.model.AquariumState;
+import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
 
 public class AquariumManager {
@@ -63,7 +62,7 @@ public class AquariumManager {
         return executeWithLock(() -> aquariumInstance.getTankCleanliness());
     }
 
-    public UserProfile getUser(String userName) throws UserNotFound {
+    public UserProfile getUser(String userName) {
         lock.lock();
         try {
             return aquariumInstance.getUser(userName);
@@ -102,12 +101,21 @@ public class AquariumManager {
         return executeWithLock(() -> aquariumInstance.removeUser(user));
     }
 
+    public String addFish(String username) {
+        return executeWithLock(() -> {
+            StringBuilder summary = new StringBuilder();
+            Fish newFish = aquariumInstance.addFishRandom(username);
+            
+            summary.append("New fish added: ").append(newFish.toString());
+            return summary.toString();
+        });
+    }
+
     public void cleanTank(double cleanValue) {
         executeWithLock(() -> aquariumInstance.cleanTank(cleanValue));
     }
 
-    public void feedFish(String userName, java.util.UUID fishId, int foodAmount) 
-            throws UserNotFound, FishNotFound {
+    public void feedFish(String userName, java.util.UUID fishId, int foodAmount) {
         lock.lock();
         try {
             aquariumInstance.feedFish(userName, fishId, foodAmount);

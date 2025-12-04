@@ -1,5 +1,6 @@
 package com.carekeeperaquarium.model;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,9 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.carekeeperaquarium.exception.TooManyFish;
-import com.carekeeperaquarium.exception.UserNotFound;
 
 class AquariumStateTest {
     private AquariumState aquarium;
@@ -55,7 +53,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testGetUserByName() throws UserNotFound {
+    void testGetUserByName() {
         aquarium.addUser(user1);
         aquarium.addUser(user2);
         
@@ -67,7 +65,7 @@ class AquariumStateTest {
     void testGetUserThrowsException() {
         aquarium.addUser(user1);
         
-        assertThrows(UserNotFound.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             aquarium.getUser("NonExistent");
         });
     }
@@ -84,7 +82,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testCleanTank() throws TooManyFish {
+    void testCleanTank() {
         // Need fish to reduce cleanliness
         Fish fish = new Fish("Test", random);
         user1.addFish(fish);
@@ -115,7 +113,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRecalculateCleanlinessWithFish() throws TooManyFish {
+    void testRecalculateCleanlinessWithFish() {
         Fish fish = new Fish("Test", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
@@ -129,7 +127,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRecalculateCleanlinessMultipleFish() throws TooManyFish {
+    void testRecalculateCleanlinessMultipleFish() {
         Fish fish1 = new Fish("Fish1", random);
         Fish fish2 = new Fish("Fish2", random);
         user1.addFish(fish1);
@@ -144,7 +142,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRecalculateCleanlinessStopsAtZero() throws TooManyFish {
+    void testRecalculateCleanlinessStopsAtZero() {
         // Need fish to soil the tank
         Fish fish = new Fish("Dirty", random);
         user1.addFish(fish);
@@ -159,7 +157,7 @@ class AquariumStateTest {
     }
         
     @Test
-    void testRecalculateCleanlinessWithLargerFish() throws TooManyFish {
+    void testRecalculateCleanlinessWithLargerFish() {
         Fish fish = new Fish("Growing", random);
         fish.grow();
         fish.grow(); // Size = 2
@@ -235,7 +233,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testProcessHunger() throws TooManyFish {
+    void testProcessHunger() {
         Fish fish = new Fish("HungryFish", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
@@ -247,7 +245,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testProcessFishGrowth() throws TooManyFish {
+    void testProcessFishGrowth() {
         Fish fish = new Fish("GrowingFish", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
@@ -259,7 +257,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testProcessPointAwards() throws TooManyFish {
+    void testProcessPointAwards() {
         Fish fish = new Fish("PointFish", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
@@ -271,7 +269,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRunIteration() throws TooManyFish {
+    void testRunIteration() {
         Fish fish = new Fish("TestFish", random);
         user1.addFish(fish);
         aquarium.addUser(user1);
@@ -289,7 +287,7 @@ class AquariumStateTest {
     }
 
     @Test
-    void testRunIterationWithMultipleUsers() throws TooManyFish {
+    void testRunIterationWithMultipleUsers() {
         Fish fish1 = new Fish("Fish1", random);
         Fish fish2 = new Fish("Fish2", random);
         

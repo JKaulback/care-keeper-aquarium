@@ -31,6 +31,13 @@ public class Fish {
     private static final Species[] speciesArray = Species.values();
     private static final int NUMBER_OF_SPECIES = speciesArray.length;
 
+    private static final String[] FISH_NAMES = {
+        "Nemo", "Dory", "Bubbles", "Goldie", "Finn", "Splash", "Coral", "Wave",
+        "Neptune", "Marina", "Aqua", "Pearl", "Shimmer", "Flounder", "Sebastian",
+        "Ariel", "Triton", "Poseidon", "Atlantis", "Reef", "Kelp", "Tide",
+        "Misty", "Sandy", "Shelly", "Starfish", "Captain", "Admiral", "Sailor"
+    };
+
     private static final int MAX_HEALTH = 100;
     private static final int MAX_SIZE = 10;
     private static final int MIN_HEALTH_TO_GROW = 50;
@@ -46,7 +53,7 @@ public class Fish {
     private int size;
     private final double soilRate;
 
-    // --- CONSTRUCTOR ---
+    // --- CONSTRUCTORS ---
     public Fish(String newName, Random random) {
         validateName(newName);
         this.id = UUID.randomUUID();
@@ -59,6 +66,17 @@ public class Fish {
         this.soilRate = DEFAULT_SOIL_RATE;
     }
 
+    public Fish(Random random) {
+        this.id = UUID.randomUUID();
+        this.name = FISH_NAMES[random.nextInt(FISH_NAMES.length)];
+        this.species = speciesArray[random.nextInt(NUMBER_OF_SPECIES)];
+        this.health = MAX_HEALTH;
+        this.hungerRate = DEFAULT_HUNGER_RATE;
+        this.age = 0;
+        this.size = 1;
+        this.soilRate = DEFAULT_SOIL_RATE;
+    }    
+    
     // --- ACCESSORS ---
     public UUID getId() { return this.id; }
     

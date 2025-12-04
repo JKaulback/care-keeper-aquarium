@@ -1,11 +1,8 @@
 package com.carekeeperaquarium.model;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.UUID;
-
-import com.carekeeperaquarium.exception.FishNotFound;
-import com.carekeeperaquarium.exception.InsufficientPoints;
-import com.carekeeperaquarium.exception.TooManyFish;
 
 public class UserProfile {
     private String username;
@@ -53,12 +50,12 @@ public class UserProfile {
 
     public int getMaxFish() { return UserProfile.MAX_FISH; }
 
-    public Fish getFishById(UUID id) throws FishNotFound {
+    public Fish getFishById(UUID id) {
         for (Fish fish : ownedFishes) {
             if (fish.getId().equals(id))
                 return fish;
         }
-        throw new FishNotFound("Fish with id '" + id + "' not found");
+        throw new NoSuchElementException("Fish with id '" + id + "' not found");
     }
 
     public boolean hasDeadFish() {
@@ -109,32 +106,32 @@ public class UserProfile {
         this.points += toAdd;
     }
 
-    public void spendPoints(int points) throws InsufficientPoints {
+    public void spendPoints(int points) {
         if (points < 0)
             throw new IllegalArgumentException("Can not spend negative points");
         if (this.points < points)
-            throw new InsufficientPoints("Not enough points. " + this.points + 
+            throw new IllegalStateException("Not enough points. " + this.points + 
                 " is less than " + points);
         this.points -= points;
     }
 
-    public void addFish(Fish newFish) throws TooManyFish {
+    public void addFish(Fish newFish) {
         if (newFish == null)
             throw new IllegalArgumentException("Cannot add null fish");
         if (this.isFull())
-            throw new TooManyFish("Attempted to add too many fish");
+            throw new IllegalStateException("Attempted to add too many fish");
         this.ownedFishes.add(newFish);
     }
 
-    public Fish getFish(UUID id) throws FishNotFound {
+    public Fish getFish(UUID id) {
         for (Fish fish : ownedFishes) {
             if (fish.getId().equals(id))
                 return fish;
         }
-        throw new FishNotFound("Fish with id '" + id + "' not found");
+        throw new NoSuchElementException("Fish with id '" + id + "' not found");
     }
 
-    public void removeFish(UUID id) throws FishNotFound {
+    public void removeFish(UUID id) {
         this.ownedFishes.remove(getFish(id));
     }
 

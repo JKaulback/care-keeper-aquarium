@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 
 import com.carekeeperaquarium.business.AquariumManager;
 import com.carekeeperaquarium.common.Command;
-import com.carekeeperaquarium.exception.UserNotFound;
 import com.carekeeperaquarium.model.UserProfile;
 
 public class ClientHandler implements Runnable {
@@ -88,7 +88,7 @@ public class ClientHandler implements Runnable {
             
             // Process commands using switch
             switch (command) {
-                case ADD_FISH -> { this.out.println("Feature to add fish is not yet implemented."); } // TODO
+                case ADD_FISH -> { this.out.println(aquariumManager.addFish(username)); } // TODO
                 case VIEW_FISH -> { this.out.println("Feature to view fish is not yet implemented."); } // TODO
                 case FEED_FISH -> { this.out.println("Feature to feed fish is not yet implemented."); } // TODO
                 case REMOVE_FISH -> { this.out.println("Feature to remove fish is not yet implemented."); } // TODO
@@ -113,8 +113,8 @@ public class ClientHandler implements Runnable {
                 UserProfile user = aquariumManager.getUser(username);
                 aquariumManager.removeUser(user);
                 System.out.println("User " + username + " has disconnected");
-            } catch (UserNotFound e) {
-                System.out.println("User " + username + " not found" + e.getMessage());
+            } catch (NoSuchElementException e) {
+                System.out.println("User " + username + " not found: " + e.getMessage());
             }
         }
 

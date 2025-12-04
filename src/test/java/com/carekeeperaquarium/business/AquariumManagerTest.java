@@ -1,5 +1,6 @@
 package com.carekeeperaquarium.business;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
 
@@ -10,9 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.carekeeperaquarium.exception.FishNotFound;
-import com.carekeeperaquarium.exception.TooManyFish;
-import com.carekeeperaquarium.exception.UserNotFound;
 import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
 
@@ -36,7 +34,7 @@ class AquariumManagerTest {
     }
 
     @Test
-    void testGetUsers() throws TooManyFish {
+    void testGetUsers() {
         UserProfile user1 = new UserProfile("User1");
         UserProfile user2 = new UserProfile("User2");
         
@@ -55,7 +53,7 @@ class AquariumManagerTest {
     }
 
     @Test
-    void testGetUser() throws UserNotFound {
+    void testGetUser() {
         UserProfile user = new UserProfile("TestUser");
         manager.addUser(user);
         
@@ -65,7 +63,7 @@ class AquariumManagerTest {
 
     @Test
     void testGetUserNotFound() {
-        assertThrows(UserNotFound.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             manager.getUser("NonExistent");
         });
     }
@@ -90,7 +88,7 @@ class AquariumManagerTest {
     }
 
     @Test
-    void testCleanTank() throws TooManyFish {
+    void testCleanTank() {
         // Add a user with fish to reduce cleanliness
         UserProfile user = new UserProfile("CleanUser");
         Fish fish = new Fish("DirtyFish", random);
@@ -110,7 +108,7 @@ class AquariumManagerTest {
     }
 
     @Test
-    void testFeedFish() throws TooManyFish, UserNotFound, FishNotFound {
+    void testFeedFish() {
         UserProfile user = new UserProfile("FeedUser");
         Fish fish = new Fish("HungryFish", random);
         user.addFish(fish);
@@ -127,26 +125,26 @@ class AquariumManagerTest {
     }
 
     @Test
-    void testFeedFishUserNotFound() throws TooManyFish {
+    void testFeedFishUserNotFound() {
         UserProfile user = new UserProfile("SomeUser");
         Fish fish = new Fish("SomeFish", random);
         user.addFish(fish);
         manager.addUser(user);
         
-        assertThrows(UserNotFound.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             manager.feedFish("NonExistentUser", fish.getId(), 10);
         });
     }
 
     @Test
-    void testFeedFishNotFound() throws TooManyFish {
+    void testFeedFishNotFound() {
         UserProfile user = new UserProfile("UserWithFish");
         Fish fish = new Fish("RealFish", random);
         user.addFish(fish);
         manager.addUser(user);
         
         UUID randomId = UUID.randomUUID();
-        assertThrows(FishNotFound.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             manager.feedFish("UserWithFish", randomId, 10);
         });
     }
@@ -157,7 +155,7 @@ class AquariumManagerTest {
     }
 
     @Test
-    void testSynchronizedAccess() throws TooManyFish {
+    void testSynchronizedAccess() {
         // Verify that multiple operations can be performed safely
         UserProfile user = new UserProfile("ConcurrentUser");
         Fish fish = new Fish("ConcurrentFish", random);

@@ -2,10 +2,10 @@ package com.carekeeperaquarium.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import com.carekeeperaquarium.exception.FishNotFound;
-import com.carekeeperaquarium.exception.UserNotFound;
+import com.carekeeperaquarium.business.FishFactory;
 
 public class AquariumState {
     private static AquariumState instance;
@@ -36,13 +36,13 @@ public class AquariumState {
 
     public synchronized double getTankCleanliness() { return this.tankCleanliness; }
 
-    public synchronized UserProfile getUser(String Username) throws UserNotFound {
+    public synchronized UserProfile getUser(String Username) {
         if (Username == null || Username.trim().isEmpty())
             throw new IllegalArgumentException("Username cannot be null or empty");
         if (users.containsKey(Username)) {
             return users.get(Username);
         }
-        throw new UserNotFound("User not logged in");
+        throw new NoSuchElementException("User not logged in");
     }
 
     public synchronized boolean hasUser(String username) {
@@ -106,6 +106,27 @@ public class AquariumState {
         }
     }
 
+    public synchronized Fish addFishRandom(String username) {
+        if (!this.hasUser(username))
+            throw new NoSuchElementException("User not logged in");
+        Fish newFish = FishFactory.createRandomFish();
+        UserProfile user = this.getUser(username);
+        
+        // Make sure there are no duplicate named fish
+        int duplicateNameCount = 0;
+        for (Fish fish : user.getFish()) {
+            if (fish.getName().startsWith(newFish.getName()))
+                duplicateNameCount++;
+        }
+        
+        // If duplicates found, name fish {name} {duplicateNameCount}
+        if (duplicateNameCount > 0) 
+            newFish.changeName(newFish.getName() + " " + duplicateNameCount);
+
+        user.addFish(newFish);
+        return newFish;
+    }
+
     public synchronized void cleanTank(double cleanValue) {
         if (cleanValue < 0)
             throw new IllegalArgumentException("Clean value cannot be negative");
@@ -113,7 +134,7 @@ public class AquariumState {
         this.clampCleanliness();
     }
 
-    public synchronized void feedFish(String username, UUID fishId, int foodAmount) throws UserNotFound, FishNotFound {
+    public synchronized void feedFish(String username, UUID fishId, int foodAmount) {
         UserProfile user = getUser(username);
         Fish fish = user.getFishById(fishId);
         fish.feed(foodAmount);
