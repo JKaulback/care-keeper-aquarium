@@ -84,8 +84,15 @@ class AquariumStateTest {
     }
 
     @Test
-    void testCleanTank() {
-        aquarium.recalculateCleanliness(); // Reduce from 100
+    void testCleanTank() throws TooManyFish {
+        // Need fish to reduce cleanliness
+        Fish fish = new Fish("Test", random);
+        user1.addFish(fish);
+        aquarium.addUser(user1);
+        
+        for (int i = 0; i < 20; i++) {
+            aquarium.recalculateCleanliness(); // Reduce from 100
+        }
         double cleanlinessAfterSoil = aquarium.getTankCleanliness();
         
         aquarium.cleanTank(1);
@@ -103,8 +110,8 @@ class AquariumStateTest {
         double initialCleanliness = aquarium.getTankCleanliness();
         aquarium.recalculateCleanliness();
         
-        // Should decrease by base tank soil value (1)
-        assertEquals(initialCleanliness - 1, aquarium.getTankCleanliness());
+        // With no fish, cleanliness should not decrease
+        assertEquals(initialCleanliness, aquarium.getTankCleanliness());
     }
 
     @Test
@@ -116,9 +123,9 @@ class AquariumStateTest {
         double initialCleanliness = aquarium.getTankCleanliness();
         aquarium.recalculateCleanliness();
         
-        // Should decrease by 1 + (fish.size * fish.soilRate)
-        // = 1 + (1 * 0.1) = 1.1
-        assertEquals(initialCleanliness - 1.1, aquarium.getTankCleanliness(), 0.001);
+        // Should decrease by (fish.size * fish.soilRate)
+        // = (1 * 0.1) = 0.1
+        assertEquals(initialCleanliness - 0.1, aquarium.getTankCleanliness(), 0.001);
     }
 
     @Test
@@ -132,34 +139,25 @@ class AquariumStateTest {
         double initialCleanliness = aquarium.getTankCleanliness();
         aquarium.recalculateCleanliness();
         
-        // 1 + (1 * 0.1) + (1 * 0.1) = 1.2
-        assertEquals(initialCleanliness - 1.2, aquarium.getTankCleanliness(), 0.001);
+        // (1 * 0.1) + (1 * 0.1) = 0.2
+        assertEquals(initialCleanliness - 0.2, aquarium.getTankCleanliness(), 0.001);
     }
 
     @Test
-    void testRecalculateCleanlinessMinimumZero() {
-        // Soil the tank many times
-        for (int i = 0; i < 200; i++) {
-            aquarium.recalculateCleanliness();
-        }
+    void testRecalculateCleanlinessStopsAtZero() throws TooManyFish {
+        // Need fish to soil the tank
+        Fish fish = new Fish("Dirty", random);
+        user1.addFish(fish);
+        aquarium.addUser(user1);
         
-        assertEquals(0.0, aquarium.getTankCleanliness());
-    }
-
-    @Test
-    void testRecalculateCleanlinessStopsAtZero() {
         // Soil until zero
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 2000; i++) {
             aquarium.recalculateCleanliness();
         }
         
         assertEquals(0.0, aquarium.getTankCleanliness());
-        
-        // Further soiling should not go negative
-        aquarium.recalculateCleanliness();
-        assertEquals(0.0, aquarium.getTankCleanliness());
     }
-
+        
     @Test
     void testRecalculateCleanlinessWithLargerFish() throws TooManyFish {
         Fish fish = new Fish("Growing", random);
@@ -172,8 +170,8 @@ class AquariumStateTest {
         double initialCleanliness = aquarium.getTankCleanliness();
         aquarium.recalculateCleanliness();
         
-        // 1 + (2 * 0.1) = 1.2
-        assertEquals(initialCleanliness - 1.2, aquarium.getTankCleanliness(), 0.001);
+        // (2 * 0.1) = 0.2
+        assertEquals(initialCleanliness - 0.2, aquarium.getTankCleanliness(), 0.001);
     }
 
     @Test
@@ -316,7 +314,7 @@ class AquariumStateTest {
         
         aquarium.runIteration();
         
-        // Should still decrease by base soil value
-        assertTrue(aquarium.getTankCleanliness() < initialCleanliness);
+        // With no users/fish, cleanliness should remain the same
+        assertEquals(initialCleanliness, aquarium.getTankCleanliness());
     }
 }

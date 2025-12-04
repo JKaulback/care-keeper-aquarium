@@ -81,17 +81,19 @@ public class ClientHandler implements Runnable {
             }
             // Process client messages here
             if (clientMessage.equalsIgnoreCase("add-fish")) {
-                this.out.println("Feature to add fish is not yet implemented.");
+                this.out.println("Feature to add fish is not yet implemented."); // TODO
             } else if (clientMessage.equalsIgnoreCase("view-fish")) {
-                this.out.println("Feature to view fish is not yet implemented.");
+                this.out.println("Feature to view fish is not yet implemented."); // TODO
             } else if (clientMessage.equalsIgnoreCase("clean-tank")) {
-                this.out.println("Feature to clean tank is not yet implemented.");
+                this.out.println("Feature to clean tank is not yet implemented."); // TODO
             } else if (clientMessage.equalsIgnoreCase("view-tank")) {
                 this.out.println(aquariumManager.getAquariumStateSummary());
             } else if (clientMessage.equalsIgnoreCase("get-fish-fact-general")) {
-                this.out.println("Feature to get general fish facts is not yet implemented.");
+                this.out.println("Feature to get general fish facts is not yet implemented."); // TODO
             } else if (clientMessage.startsWith("fact-")) {
-                this.out.println("Feature to get specific fish facts is not yet implemented.");
+                this.out.println("Feature to get specific fish facts is not yet implemented."); // TODO
+            } else if (clientMessage.equalsIgnoreCase("change-username")) {
+                this.out.println("Feature to change username not yet implemented."); // TODO
             } else if (clientMessage.equalsIgnoreCase("quit") || clientMessage.equalsIgnoreCase("exit")) {
                 this.out.println("Goodbye, " + username + "!");
                 break;
@@ -99,7 +101,6 @@ public class ClientHandler implements Runnable {
                 this.out.println("Unknown command. Please try again.");
             }
         }
-
     }
 
     private void handleShutdown() throws IOException {

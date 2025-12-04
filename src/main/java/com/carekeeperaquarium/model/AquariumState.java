@@ -12,7 +12,6 @@ public class AquariumState {
 
     private static final double MAX_CLEANLINESS = 100.0;
     private static final double MIN_CLEANLINESS = 0.0;
-    private static final double BASE_SOIL_VALUE = 1.0;
 
     private final HashMap<String, UserProfile> users;
     private double tankCleanliness;
@@ -74,7 +73,7 @@ public class AquariumState {
 
     public synchronized void recalculateCleanliness() {
         if (this.tankCleanliness > MIN_CLEANLINESS) {
-            double tankSoilValue = BASE_SOIL_VALUE;
+            double tankSoilValue = 0;
             for (UserProfile user : users.values()) {
                 for (Fish fish : user.getFish()) {
                     tankSoilValue += fish.getSize() * fish.getSoilRate();
