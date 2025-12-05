@@ -2,7 +2,6 @@ package com.carekeeperaquarium.business;
 
 import java.util.NoSuchElementException;
 import java.util.Random;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -119,7 +118,7 @@ class AquariumManagerTest {
         int healthAfterHunger = fish.getHealth();
         
         // Feed the fish through manager
-        manager.feedFish("FeedUser", fish.getId(), 10);
+        manager.feedFish("FeedUser");
         
         assertTrue(fish.getHealth() > healthAfterHunger);
     }
@@ -132,20 +131,7 @@ class AquariumManagerTest {
         manager.addUser(user);
         
         assertThrows(NoSuchElementException.class, () -> {
-            manager.feedFish("NonExistentUser", fish.getId(), 10);
-        });
-    }
-
-    @Test
-    void testFeedFishNotFound() {
-        UserProfile user = new UserProfile("UserWithFish");
-        Fish fish = new Fish("RealFish", random);
-        user.addFish(fish);
-        manager.addUser(user);
-        
-        UUID randomId = UUID.randomUUID();
-        assertThrows(NoSuchElementException.class, () -> {
-            manager.feedFish("UserWithFish", randomId, 10);
+            manager.feedFish("NonExistentUser");
         });
     }
 

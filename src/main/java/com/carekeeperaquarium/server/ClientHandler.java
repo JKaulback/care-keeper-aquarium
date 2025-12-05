@@ -88,9 +88,25 @@ public class ClientHandler implements Runnable {
             
             // Process commands using switch
             switch (command) {
-                case ADD_FISH -> { this.out.println(aquariumManager.addFish(username)); } // TODO
-                case VIEW_FISH -> { this.out.println("Feature to view fish is not yet implemented."); } // TODO
-                case FEED_FISH -> { this.out.println("Feature to feed fish is not yet implemented."); } // TODO
+                case ADD_FISH -> { 
+                    String message;
+                    try { message = aquariumManager.addFish(username); }
+                    catch (IllegalStateException e) { message = e.getMessage(); } 
+                    catch (Exception e) { message = "Error adding fish"; }
+                    this.out.println(message);
+                }
+                case VIEW_FISH -> { 
+                    String message;
+                    try { message = aquariumManager.viewFish(username); }
+                    catch (Exception e) { message = "Error viewing fish"; }
+                    this.out.println(message); 
+                }
+                case FEED_FISH -> {
+                    String message;
+                    try { message = aquariumManager.feedFish(username); }
+                    catch (Exception e) { message = "Error feeding fish"; }
+                    this.out.println(message); 
+                }
                 case REMOVE_FISH -> { this.out.println("Feature to remove fish is not yet implemented."); } // TODO
                 case CLEAN_TANK -> { this.out.println("Feature to clean tank is not yet implemented."); } // TODO
                 case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }

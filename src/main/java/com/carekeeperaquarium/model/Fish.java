@@ -120,16 +120,11 @@ public class Fish {
         }
     }
 
-    public void feed(int food) {
-        if (food <= 0) {
-            throw new IllegalArgumentException("Food amount must be positive");
-        }
+    public void feed() {
         if (this.isDead()) {
             throw new IllegalStateException("Cannot feed a dead fish");
         }
-        this.health += food;
-        if (this.health > MAX_HEALTH)
-            this.health = MAX_HEALTH;
+        this.health = MAX_HEALTH;
     }
 
     @Override
@@ -148,10 +143,8 @@ public class Fish {
     @Override
     public String toString() {
         return String.format(
-            "ID: %s, Name: %s, Species: %s, Health: %d/%d, Age: %d" +
-            ", Size: %d, Hunger Rate: %d, Soil Rate: %.2f", 
-            this.id.toString(), this.name, this.getSpecies(),this.health, 
-            Fish.MAX_HEALTH, this.age, this.size, this.hungerRate, this.soilRate
+            "Name: %s, Species: %s, Health: %d/%d, Age: %d, Size: %d", 
+            this.name, this.getSpecies(),this.health, Fish.MAX_HEALTH, this.age, this.size
             );
     }
 

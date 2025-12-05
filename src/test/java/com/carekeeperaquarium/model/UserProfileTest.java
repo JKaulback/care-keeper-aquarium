@@ -72,7 +72,7 @@ class UserProfileTest {
         profile.addFish(fish1);
         profile.addFish(fish2);
         
-        Fish retrieved = profile.getFish(fish1.getId());
+        Fish retrieved = profile.getFish(fish1.getName());
         assertEquals(fish1.getId(), retrieved.getId());
         assertEquals("Fish1", retrieved.getName());
     }
@@ -80,7 +80,7 @@ class UserProfileTest {
     @Test
     void testGetFishByIdThrowsException() {
         assertThrows(NoSuchElementException.class, () -> {
-            profile.getFish(java.util.UUID.randomUUID());
+            profile.getFish("fake-test-fish");
         });
     }
 
@@ -90,14 +90,14 @@ class UserProfileTest {
         profile.addFish(fish);
         assertEquals(1, profile.getNumberOfFishOwned());
         
-        profile.removeFish(fish.getId());
+        profile.removeFish(fish.getName());
         assertEquals(0, profile.getNumberOfFishOwned());
     }
 
     @Test
     void testRemoveFishThrowsException() {
         assertThrows(NoSuchElementException.class, () -> {
-            profile.removeFish(java.util.UUID.randomUUID());
+            profile.removeFish("fake-test-fish");
         });
     }
 

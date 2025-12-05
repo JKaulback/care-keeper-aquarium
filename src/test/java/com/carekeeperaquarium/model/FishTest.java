@@ -81,30 +81,10 @@ class FishTest {
 
     @Test
     void testFeed() {
+        int healthBeforeDamage = fish.getHealth();
         fish.processHunger();
-        int healthAfterDamage = fish.getHealth();
-        fish.feed(1);
-        assertEquals(healthAfterDamage + 1, fish.getHealth());
-    }
-
-    @Test
-    void testFeedMaxCap() {
-        fish.feed(50);
-        assertEquals(100, fish.getHealth());
-    }
-
-    @Test
-    void testFeedWithZeroThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            fish.feed(0);
-        });
-    }
-
-    @Test
-    void testFeedWithNegativeThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            fish.feed(-5);
-        });
+        fish.feed();
+        assertEquals(healthBeforeDamage, fish.getHealth());
     }
 
     @Test
@@ -116,7 +96,7 @@ class FishTest {
         assertTrue(fish.isDead());
         
         assertThrows(IllegalStateException.class, () -> {
-            fish.feed(10);
+            fish.feed();
         });
     }
 

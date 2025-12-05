@@ -123,16 +123,16 @@ public class UserProfile {
         this.ownedFishes.add(newFish);
     }
 
-    public Fish getFish(UUID id) {
+    public Fish getFish(String name) {
         for (Fish fish : ownedFishes) {
-            if (fish.getId().equals(id))
+            if (fish.getName().equals(name))
                 return fish;
         }
-        throw new NoSuchElementException("Fish with id '" + id + "' not found");
+        throw new NoSuchElementException("Fish with name '" + name + "' not found");
     }
 
-    public void removeFish(UUID id) {
-        this.ownedFishes.remove(getFish(id));
+    public void removeFish(String name) {
+        this.ownedFishes.remove(getFish(name));
     }
 
     @Override

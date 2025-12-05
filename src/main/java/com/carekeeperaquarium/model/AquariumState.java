@@ -3,7 +3,6 @@ package com.carekeeperaquarium.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 import com.carekeeperaquarium.business.FishFactory;
 
@@ -49,12 +48,19 @@ public class AquariumState {
         return users.containsKey(username);
     }
 
+    public synchronized String userToString(String username) {
+        if (!hasUser(username))
+            throw new NoSuchElementException("User not found");
+        return getUser(username).toString();
+    }
+
     // --- MODIFIERS ---
     public synchronized void runIteration() {
         recalculateCleanliness();
         processHunger();
         processFishGrowth();
         processPointAwards();
+        System.out.println("Updating tank...");
     }
 
     public synchronized void addUser(UserProfile user) {
@@ -134,10 +140,18 @@ public class AquariumState {
         this.clampCleanliness();
     }
 
-    public synchronized void feedFish(String username, UUID fishId, int foodAmount) {
+    public synchronized int feedFish(String username) {
         UserProfile user = getUser(username);
-        Fish fish = user.getFishById(fishId);
-        fish.feed(foodAmount);
+        int count = 0;
+        for (Fish fish : user.getFish()) {
+            try {
+                fish.feed();
+                count++;
+            } catch (IllegalStateException e) {
+                // Attempt to feed dead fish
+            }
+        }
+        return count;
     }
 
     protected synchronized void reset() {

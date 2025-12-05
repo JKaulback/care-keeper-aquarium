@@ -106,22 +106,24 @@ public class AquariumManager {
             StringBuilder summary = new StringBuilder();
             Fish newFish = aquariumInstance.addFishRandom(username);
             
-            summary.append("New fish added: ").append(newFish.toString());
+            summary.append("New fish added:\n").append(newFish.toString());
             return summary.toString();
         });
+    }
+
+    public String viewFish(String username) {
+        return executeWithLock(() -> aquariumInstance.userToString(username));
     }
 
     public void cleanTank(double cleanValue) {
         executeWithLock(() -> aquariumInstance.cleanTank(cleanValue));
     }
 
-    public void feedFish(String userName, java.util.UUID fishId, int foodAmount) {
-        lock.lock();
-        try {
-            aquariumInstance.feedFish(userName, fishId, foodAmount);
-        } finally {
-            lock.unlock();
-        }
+    public String feedFish(String userName) {
+        return executeWithLock(() -> {
+            int numFishFed = aquariumInstance.feedFish(userName);
+            return "Fish Fed: " + numFishFed;
+        });
     }
 
 }
