@@ -106,7 +106,7 @@ public class AquariumManager {
             StringBuilder summary = new StringBuilder();
             Fish newFish = aquariumInstance.addFishRandom(username);
             
-            summary.append("New fish added:\n").append(newFish.toString());
+            summary.append("New Fish Added:\n").append(newFish.toString());
             return summary.toString();
         });
     }
@@ -122,8 +122,11 @@ public class AquariumManager {
         });
     }
 
-    public void cleanTank(double cleanValue) {
-        executeWithLock(() -> aquariumInstance.cleanTank(cleanValue));
+    public String cleanTank() {
+        return executeWithLock(() -> {
+            aquariumInstance.cleanTank();
+            return "Tank successfully cleaned!";
+        });
     }
 
     public String feedFish(String userName) {

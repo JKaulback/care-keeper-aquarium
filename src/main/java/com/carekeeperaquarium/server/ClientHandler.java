@@ -136,8 +136,8 @@ public class ClientHandler implements Runnable {
                     try { message = aquariumManager.removeFish(username, fishName); }
                     catch (Exception e) { message = e.getMessage(); }
                     this.out.println(message);
-                } // TODO
-                case CLEAN_TANK -> { this.out.println("Feature to clean tank is not yet implemented."); } // TODO
+                }
+                case CLEAN_TANK -> { this.out.println(aquariumManager.cleanTank()); }
                 case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }
                 case GET_FISH_FACT_GENERAL -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
                 case FACT -> { this.out.println("Feature to get specific fish facts is not yet implemented."); } // TODO

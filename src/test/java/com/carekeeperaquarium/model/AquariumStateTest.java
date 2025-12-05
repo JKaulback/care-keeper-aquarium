@@ -88,18 +88,19 @@ class AquariumStateTest {
         user1.addFish(fish);
         aquarium.addUser(user1);
         
+        double cleanlinessBeforeSoil = aquarium.getTankCleanliness();
+
         for (int i = 0; i < 20; i++) {
             aquarium.recalculateCleanliness(); // Reduce from 100
         }
-        double cleanlinessAfterSoil = aquarium.getTankCleanliness();
-        
-        aquarium.cleanTank(1);
-        assertEquals(cleanlinessAfterSoil + 1, aquarium.getTankCleanliness());
+
+        aquarium.cleanTank();
+        assertEquals(cleanlinessBeforeSoil, aquarium.getTankCleanliness());
     }
 
     @Test
     void testCleanTankMaxCap() {
-        aquarium.cleanTank(50);
+        aquarium.cleanTank();
         assertEquals(100.0, aquarium.getTankCleanliness());
     }
 
@@ -222,13 +223,6 @@ class AquariumStateTest {
     void testGetUserWithEmptyUsername() {
         assertThrows(IllegalArgumentException.class, () -> {
             aquarium.getUser("  ");
-        });
-    }
-
-    @Test
-    void testCleanTankWithNegativeValue() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            aquarium.cleanTank(-10);
         });
     }
 

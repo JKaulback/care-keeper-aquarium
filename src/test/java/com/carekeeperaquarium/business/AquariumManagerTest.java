@@ -98,7 +98,7 @@ class AquariumManagerTest {
         double initialCleanliness = manager.getTankCleanliness();
         
         // Clean the tank
-        manager.cleanTank(10);
+        manager.cleanTank();
         double afterCleaning = manager.getTankCleanliness();
         
         // Verify cleanliness increased (or at least didn't decrease)
@@ -149,7 +149,7 @@ class AquariumManagerTest {
         
         manager.addUser(user);
         double cleanliness1 = manager.getTankCleanliness();
-        manager.cleanTank(5);
+        manager.cleanTank();
         double cleanliness2 = manager.getTankCleanliness();
         
         assertTrue(cleanliness2 >= cleanliness1);

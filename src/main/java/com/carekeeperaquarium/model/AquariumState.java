@@ -86,8 +86,9 @@ public class AquariumState {
                 }
             }
             this.tankCleanliness -= tankSoilValue;
+            if (this.tankCleanliness < MIN_CLEANLINESS)
+                this.tankCleanliness = MIN_CLEANLINESS;
         }
-        this.clampCleanliness();
     }
 
     public synchronized void processHunger() {
@@ -136,11 +137,8 @@ public class AquariumState {
         return user.removeFish(fishName);
     }
 
-    public synchronized void cleanTank(double cleanValue) {
-        if (cleanValue < 0)
-            throw new IllegalArgumentException("Clean value cannot be negative");
-        this.tankCleanliness += cleanValue;
-        this.clampCleanliness();
+    public synchronized void cleanTank() {
+        this.tankCleanliness = MAX_CLEANLINESS;
     }
 
     public synchronized int feedFish(String username) {
@@ -160,10 +158,5 @@ public class AquariumState {
     protected synchronized void reset() {
         this.users.clear();
         this.tankCleanliness = MAX_CLEANLINESS;
-    }
-
-    private synchronized void clampCleanliness() {
-        if (this.tankCleanliness < MIN_CLEANLINESS) this.tankCleanliness = MIN_CLEANLINESS;
-        else if (this.tankCleanliness > MAX_CLEANLINESS) this.tankCleanliness = MAX_CLEANLINESS;
     }
 }
