@@ -101,13 +101,20 @@ public class AquariumManager {
         return executeWithLock(() -> aquariumInstance.removeUser(user));
     }
 
+    public String changeUsername(String oldName, String newName) {
+        return executeWithLock(() ->{
+            if (aquariumInstance.changeName(oldName, newName)) {
+                return "Name successfully changed from '" + oldName + "' to '" + newName + "'";
+            } else {
+                return "Failed to change name";
+            }
+        });
+    }
+
     public String addFish(String username) {
         return executeWithLock(() -> {
-            StringBuilder summary = new StringBuilder();
             Fish newFish = aquariumInstance.addFishRandom(username);
-            
-            summary.append("New Fish Added:\n").append(newFish.toString());
-            return summary.toString();
+            return "New Fish Added:\n" + newFish.toString();
         });
     }
 

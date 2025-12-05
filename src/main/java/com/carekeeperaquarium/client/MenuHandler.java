@@ -38,7 +38,6 @@ public class MenuHandler {
             case MenuOption.FACTS -> { return showFishFactsMenu(console); }
             case MenuOption.SPECIES1 -> { return showSpecies1Menu(console); }
             case MenuOption.SPECIES2 -> { return showSpecies2Menu(console); }
-            case MenuOption.SETTINGS -> { return showSettingsMenu(console); }
             default -> throw new IllegalArgumentException("Unexpected value: " + currentMenu);
         }
     }
@@ -48,7 +47,6 @@ public class MenuHandler {
             case "manage-fish" -> MenuOption.FISH;
             case "manage-tank" -> MenuOption.TANK;
             case "fish-facts", "back-facts" -> MenuOption.FACTS;
-            case "settings" -> MenuOption.SETTINGS;
             case "get-fish-fact-specific", "species-1" -> MenuOption.SPECIES1;
             case "species-2" -> MenuOption.SPECIES2;
             case "back" -> MenuOption.MAIN;
@@ -61,7 +59,6 @@ public class MenuHandler {
         mainMenu.addItem("Manage Fish", "manage-fish");
         mainMenu.addItem("Manage Tank", "manage-tank");
         mainMenu.addItem("Get Fish Facts", "fish-facts");
-        mainMenu.addItem("Settings", "settings");
         mainMenu.addItem("Quit", Command.QUIT_MENU.getPrimaryAlias());
         return console.showMenu(mainMenu);
     }
@@ -116,12 +113,5 @@ public class MenuHandler {
         speciesMenu.addItem("Prev Page", "species-1");
         speciesMenu.addItem("Back to Fish Facts Menu", "back-facts");
         return console.showMenu(speciesMenu);
-    }
-
-    private static String showSettingsMenu(ConsoleUI console) {
-        Menu settingsMenu = new Menu("Settings Menu");
-        settingsMenu.addItem("Change Username", Command.CHANGE_USERNAME.getPrimaryAlias());
-        settingsMenu.addItem("Back to Main Menu", "back");
-        return console.showMenu(settingsMenu);
     }
 }

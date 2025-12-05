@@ -77,6 +77,12 @@ public class AquariumState {
         return users.remove(user.getUsername()) != null;
     }
 
+    public synchronized boolean changeName(String oldName, String newName) {
+        UserProfile user = getUser(oldName);
+        user.changeUsername(newName);
+        return hasUser(newName) && !hasUser(oldName);
+    }
+
     public synchronized void recalculateCleanliness() {
         if (this.tankCleanliness > MIN_CLEANLINESS) {
             double tankSoilValue = 0;

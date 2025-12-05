@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import com.carekeeperaquarium.common.Command;
+
 public class AquariumClient {
     private static final String SERVER_URL = "localhost";
     private static final int SERVER_PORT = 8080;
@@ -63,7 +65,6 @@ public class AquariumClient {
     }
 
     private void handleFishListSelection() throws IOException {
-        waitingForServerInput = true;
         try {
             ArrayList<String> fishList = new ArrayList<>();
             String line;
@@ -126,7 +127,7 @@ public class AquariumClient {
                     continue;
 
                 // Set flag before sending remove-fish command to wait for server response
-                if (input.equalsIgnoreCase("remove-fish")) {
+                if (input.equalsIgnoreCase(Command.REMOVE_FISH.getPrimaryAlias())) {
                     waitingForServerInput = true;
                 }
                 

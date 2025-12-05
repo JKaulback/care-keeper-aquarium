@@ -14,7 +14,6 @@ public enum Command {
     VIEW_TANK("view-tank"),
     GET_FISH_FACT_GENERAL("get-fish-fact-general"),
     FACT("fact-"),
-    CHANGE_USERNAME("change-username"),
     QUIT("quit", "exit"),
     QUIT_MENU("quit-menu"),
     UNKNOWN("");

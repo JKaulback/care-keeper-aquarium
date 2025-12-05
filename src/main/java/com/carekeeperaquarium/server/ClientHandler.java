@@ -14,6 +14,9 @@ import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
 
 public class ClientHandler implements Runnable {
+
+    private static final String CANCEL_STRING = "Cancelled. No changes made";
+
     private final Socket socket;
     private final AquariumManager aquariumManager;
     private BufferedReader in;
@@ -125,23 +128,21 @@ public class ClientHandler implements Runnable {
                     this.out.println(message); 
                 }
                 case REMOVE_FISH -> { 
-                    // Send fish list to client
+                    String message = CANCEL_STRING; // Assume cancel
                     sendFishListToClient(username); // Send fish list to client
-                    String fishName = getFishName(); // Get the name of the fish to remove
-                    if (fishName.equalsIgnoreCase("!cancel")) {
-                        this.out.println("Cancelled. No changes made");
-                        break;
+                    String fishName = getName(); // Get the name of the fish to remove
+                    // If not cancelled, attempt to remove the fish
+                    if (!isOperationCancelled(fishName)) {
+                        try { message = aquariumManager.removeFish(username, fishName); }
+                        catch (Exception e) { message = e.getMessage(); } 
                     }
-                    String message;
-                    try { message = aquariumManager.removeFish(username, fishName); }
-                    catch (Exception e) { message = e.getMessage(); }
+                    // Print the outcome to the user
                     this.out.println(message);
                 }
                 case CLEAN_TANK -> { this.out.println(aquariumManager.cleanTank()); }
                 case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }
                 case GET_FISH_FACT_GENERAL -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
                 case FACT -> { this.out.println("Feature to get specific fish facts is not yet implemented."); } // TODO
-                case CHANGE_USERNAME -> { this.out.println("Feature to change username not yet implemented."); } // TODO
                 case QUIT -> { 
                     this.out.println("Goodbye, " + username + "!"); 
                     return;
@@ -166,11 +167,15 @@ public class ClientHandler implements Runnable {
         if (this.out != null) { this.out.close(); }
     }
 
-    private String getFishName() throws IOException {
-        String fishName = in.readLine();
-        if (fishName == null)
+    private String getName() throws IOException {
+        String name = in.readLine();
+        if (name == null)
             return "!cancel";
-        return fishName;
+        return name;
+    }
+
+    private boolean isOperationCancelled(String value) {
+        return value.equalsIgnoreCase("!cancel");
     }
 
     private void sendFishListToClient(String username) {
