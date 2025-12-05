@@ -115,6 +115,13 @@ public class AquariumManager {
         return executeWithLock(() -> aquariumInstance.userToString(username));
     }
 
+    public String removeFish(String username, String fishName) {
+        return executeWithLock(() ->{ 
+            Fish removedFish = aquariumInstance.removeFish(username, fishName);
+            return "Successfully removed fish: " + removedFish.getName();
+        });
+    }
+
     public void cleanTank(double cleanValue) {
         executeWithLock(() -> aquariumInstance.cleanTank(cleanValue));
     }

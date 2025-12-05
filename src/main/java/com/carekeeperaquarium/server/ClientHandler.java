@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import com.carekeeperaquarium.business.AquariumManager;
 import com.carekeeperaquarium.common.Command;
+import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
 
 public class ClientHandler implements Runnable {
@@ -50,24 +52,39 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private boolean validateUsername(String username) {
+    private boolean isUsernameNotNullOrEmpty(String username) {
         return username != null && !username.trim().isEmpty();
+    }
+
+    private boolean isValidNameCharacters(String username) {
+        return username.matches("[a-zA-Z0-9 _-]+");
     }
 
     private void handleLogin() throws IOException {
         this.out.println("Welcome to CareKeeper Aquarium!");
         while (true) {
             username = this.in.readLine();
-            // Validate username
-            if (validateUsername(username)) {
-                // Check if user already logged in
-                if (!aquariumManager.hasUser(username))
-                    break;
-                else
-                    this.out.println("Username already logged in. Please try a different username.");
-            } else {
+            
+            // Validate username not null or empty
+            if (!isUsernameNotNullOrEmpty(username)) {
                 this.out.println("Invalid username. Please try again."); 
+                continue;
+            }    
+
+            // Validate username uses legal characters
+            if (!isValidNameCharacters(username)) {
+                this.out.println("Invalid username. Can not contain special characters");
+                continue;
             }
+
+            // Check if user already logged in
+            if (aquariumManager.hasUser(username)) {
+                this.out.println("Username already logged in. Please try a different username.");
+                continue;
+            }
+            // Username acceptable
+            break;
+
         }
         // Create user profile and add to aquarium manager
         UserProfile user = new UserProfile(username);
@@ -107,7 +124,19 @@ public class ClientHandler implements Runnable {
                     catch (Exception e) { message = "Error feeding fish"; }
                     this.out.println(message); 
                 }
-                case REMOVE_FISH -> { this.out.println("Feature to remove fish is not yet implemented."); } // TODO
+                case REMOVE_FISH -> { 
+                    // Send fish list to client
+                    sendFishListToClient(username); // Send fish list to client
+                    String fishName = getFishName(); // Get the name of the fish to remove
+                    if (fishName.equalsIgnoreCase("!cancel")) {
+                        this.out.println("Cancelled. No changes made");
+                        break;
+                    }
+                    String message;
+                    try { message = aquariumManager.removeFish(username, fishName); }
+                    catch (Exception e) { message = e.getMessage(); }
+                    this.out.println(message);
+                } // TODO
                 case CLEAN_TANK -> { this.out.println("Feature to clean tank is not yet implemented."); } // TODO
                 case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }
                 case GET_FISH_FACT_GENERAL -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
@@ -133,9 +162,36 @@ public class ClientHandler implements Runnable {
                 System.out.println("User " + username + " not found: " + e.getMessage());
             }
         }
-
         if (this.in != null) { this.in.close(); }
-
         if (this.out != null) { this.out.close(); }
+    }
+
+    private String getFishName() throws IOException {
+        String fishName = in.readLine();
+        if (fishName == null)
+            return "!cancel";
+        return fishName;
+    }
+
+    private void sendFishListToClient(String username) {
+        try {
+            UserProfile user = aquariumManager.getUser(username);
+            ArrayList<Fish> fishList = user.getFish();
+            
+            if (fishList.isEmpty()) {
+                this.out.println("FISH_LIST:EMPTY");
+                return;
+            }
+
+            // Send fish list with special format that client can parse
+            this.out.println("FISH_LIST:START");
+            for (int i = 0; i < fishList.size(); i++) {
+                Fish fish = fishList.get(i);
+                this.out.println(fish.getName());
+            }
+            this.out.println("FISH_LIST:END");
+        } catch (NoSuchElementException e) {
+            this.out.println("FISH_LIST:ERROR");
+        }
     }
 }

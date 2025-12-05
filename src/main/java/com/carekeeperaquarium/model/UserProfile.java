@@ -131,8 +131,10 @@ public class UserProfile {
         throw new NoSuchElementException("Fish with name '" + name + "' not found");
     }
 
-    public void removeFish(String name) {
-        this.ownedFishes.remove(getFish(name));
+    public Fish removeFish(String name) {
+        Fish removedFish = getFish(name);
+        this.ownedFishes.remove(removedFish);
+        return removedFish;
     }
 
     @Override

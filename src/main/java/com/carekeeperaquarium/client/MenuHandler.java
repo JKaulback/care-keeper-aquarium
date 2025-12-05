@@ -1,5 +1,7 @@
 package com.carekeeperaquarium.client;
 
+import java.util.ArrayList;
+
 import com.carekeeperaquarium.common.Command;
 
 public class MenuHandler {
@@ -18,6 +20,14 @@ public class MenuHandler {
                 return input;
 
         }
+    }
+
+    public static String handleFishSelectionMenu(ConsoleUI console, ArrayList<String> fishArray) {
+        Menu fishListMenu = new Menu("Your Fish");
+        for (String fish : fishArray)
+            fishListMenu.addItem(fish);
+        fishListMenu.addItem("Cancel", "!cancel");
+        return console.showMenu(fishListMenu);
     }
 
     private static String getSelection(ConsoleUI console, MenuOption currentMenu) {

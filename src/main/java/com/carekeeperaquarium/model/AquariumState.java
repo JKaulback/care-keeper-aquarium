@@ -113,8 +113,6 @@ public class AquariumState {
     }
 
     public synchronized Fish addFishRandom(String username) {
-        if (!this.hasUser(username))
-            throw new NoSuchElementException("User not logged in");
         Fish newFish = FishFactory.createRandomFish();
         UserProfile user = this.getUser(username);
         
@@ -131,6 +129,11 @@ public class AquariumState {
 
         user.addFish(newFish);
         return newFish;
+    }
+
+    public synchronized Fish removeFish(String username, String fishName) {
+        UserProfile user = getUser(username);
+        return user.removeFish(fishName);
     }
 
     public synchronized void cleanTank(double cleanValue) {

@@ -16,6 +16,10 @@ public class Menu {
         items.add(new MenuItem(label, value));
     }
 
+    public void addItem(String label) {
+        items.add(new MenuItem(label, label));
+    }
+
     public String getTitle() {
         return title;
     }

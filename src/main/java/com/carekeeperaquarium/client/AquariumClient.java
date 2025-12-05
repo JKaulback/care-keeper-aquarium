@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class AquariumClient {
     private static final String SERVER_URL = "localhost";
@@ -16,6 +17,7 @@ public class AquariumClient {
     private volatile boolean running = true;
     private volatile boolean loggedIn = false;
     private volatile boolean pauseMessages = false;
+    private volatile boolean waitingForServerInput = false;
 
     public AquariumClient() throws IOException {
         console = new ConsoleUI();
@@ -44,7 +46,13 @@ public class AquariumClient {
             String message;
             while (running && (message = in.readLine()) != null) {
                 if (!pauseMessages) {
-                    console.println(message);
+                    // Check for structured fish list data
+                    switch (message) {
+                        case "FISH_LIST:START" -> handleFishListSelection();
+                        case "FISH_LIST:EMPTY" -> console.println("You don't have any fish to remove.");
+                        case "FISH_LIST:ERROR" -> console.println("Error retrieving fish list.");
+                        default -> console.println(message);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -54,10 +62,48 @@ public class AquariumClient {
         }
     }
 
+    private void handleFishListSelection() throws IOException {
+        waitingForServerInput = true;
+        try {
+            ArrayList<String> fishList = new ArrayList<>();
+            String line;
+            console.println("Loading Fish...");
+            
+            // Collect all fish data until END marker
+            while ((line = in.readLine()) != null && !line.equals("FISH_LIST:END")) {
+                fishList.add(line);
+            }
+            
+            if (fishList.isEmpty()) {
+                console.println("No fish available to remove.");
+                out.println("!cancel");
+                return;
+            }
+                   
+            // Get user selection
+            String selection = MenuHandler.handleFishSelectionMenu(console, fishList);
+            
+            // Send selection back to server
+            out.println(selection);
+        } finally {
+            waitingForServerInput = false;
+        }
+    }
+
     private void handleUserInput() {
         try {
             String input;
             while (running) {
+                // Wait if server is requesting input from the listener thread
+                while (waitingForServerInput) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                }
+                
                 if (!loggedIn) {
                     input = console.readLine("Enter username: ");
                     if (input != null && !input.trim().isEmpty()) {
@@ -79,6 +125,11 @@ public class AquariumClient {
                 if (input.equalsIgnoreCase("quit-menu"))
                     continue;
 
+                // Set flag before sending remove-fish command to wait for server response
+                if (input.equalsIgnoreCase("remove-fish")) {
+                    waitingForServerInput = true;
+                }
+                
                 this.out.println(input);
             }
         } finally {
