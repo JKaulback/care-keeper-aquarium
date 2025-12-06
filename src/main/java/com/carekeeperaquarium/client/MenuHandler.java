@@ -7,7 +7,7 @@ import com.carekeeperaquarium.common.Command;
 public class MenuHandler {
 
     private enum MenuOption {
-        MAIN, FISH, TANK, FACTS, SPECIES1, SPECIES2, SETTINGS, RETURNING
+        MAIN, FISH, TANK, FACT, RETURNING
     }
 
     public static String handleMenu(ConsoleUI console) {
@@ -18,7 +18,6 @@ public class MenuHandler {
             currentMenu = processInput(input); // Decide on next navigation or returning
             if (currentMenu == MenuOption.RETURNING) // If returning, end menu navigation
                 return input;
-
         }
     }
 
@@ -35,9 +34,6 @@ public class MenuHandler {
             case MenuOption.MAIN -> { return showMainMenu(console); }
             case MenuOption.FISH -> { return showFishMenu(console); }
             case MenuOption.TANK -> { return showTankMenu(console); }
-            case MenuOption.FACTS -> { return showFishFactsMenu(console); }
-            case MenuOption.SPECIES1 -> { return showSpecies1Menu(console); }
-            case MenuOption.SPECIES2 -> { return showSpecies2Menu(console); }
             default -> throw new IllegalArgumentException("Unexpected value: " + currentMenu);
         }
     }
@@ -46,9 +42,7 @@ public class MenuHandler {
         return switch (input) {
             case "manage-fish" -> MenuOption.FISH;
             case "manage-tank" -> MenuOption.TANK;
-            case "fish-facts", "back-facts" -> MenuOption.FACTS;
-            case "get-fish-fact-specific", "species-1" -> MenuOption.SPECIES1;
-            case "species-2" -> MenuOption.SPECIES2;
+            case "fish-fact" -> MenuOption.FACT;
             case "back" -> MenuOption.MAIN;
             default -> MenuOption.RETURNING; // A command has been determined, returning to AquariumClient
         };
@@ -58,7 +52,7 @@ public class MenuHandler {
         Menu mainMenu = new Menu("Aquarium Client Main Menu");
         mainMenu.addItem("Manage Fish", "manage-fish");
         mainMenu.addItem("Manage Tank", "manage-tank");
-        mainMenu.addItem("Get Fish Facts", "fish-facts");
+        mainMenu.addItem("Get Fish Fact", Command.GET_FISH_FACT.getPrimaryAlias());
         mainMenu.addItem("Log Out", Command.QUIT.getPrimaryAlias());
         return console.showMenu(mainMenu);
     }
@@ -79,39 +73,5 @@ public class MenuHandler {
         tankMenu.addItem("Clean Tank", Command.CLEAN_TANK.getPrimaryAlias());
         tankMenu.addItem("Back to Main Menu", "back");
         return console.showMenu(tankMenu);
-    }
-
-    private static String showFishFactsMenu(ConsoleUI console) {
-        Menu fishFactsMenu = new Menu("Fish Facts Menu");
-        fishFactsMenu.addItem("General Fish Facts", Command.GET_FISH_FACT_GENERAL.getPrimaryAlias());
-        fishFactsMenu.addItem("Specific Fish Facts", "get-fish-fact-specific");
-        fishFactsMenu.addItem("Back to Main Menu", "back");
-        return console.showMenu(fishFactsMenu);
-    }
-     
-    private static String showSpecies1Menu(ConsoleUI console) {
-        Menu speciesMenu = new Menu("Fish Species Menu (page 1)");
-        speciesMenu.addItem("Angel Fish", "fact-angel-fish");
-        speciesMenu.addItem("Yellow Tang", "fact-yellow-tang");
-        speciesMenu.addItem("Neon Goby", "fact-neon-goby");
-        speciesMenu.addItem("Clown Loach", "fact-clown-loach");
-        speciesMenu.addItem("Swordtail", "fact-swordtail");
-        speciesMenu.addItem("Cardinal Tetra", "fact-cardinal-tetra");
-        speciesMenu.addItem("Next Page", "species-2");
-        speciesMenu.addItem("Back to Fish Facts Menu", "back-facts");
-        return console.showMenu(speciesMenu);
-    }
-
-    private static String showSpecies2Menu(ConsoleUI console) {
-        Menu speciesMenu = new Menu("Fish Species Menu (page 2)");
-        speciesMenu.addItem("Bristlenose", "fact-bristlenose");
-        speciesMenu.addItem("Betta", "fact-betta");
-        speciesMenu.addItem("Tiger Barb", "fact-tiger-barb");
-        speciesMenu.addItem("White Cloud Mountain Minnow", "fact-white-cloud-mountain-minnow");
-        speciesMenu.addItem("Convict Cichlid", "fact-convict-cichlid");
-        speciesMenu.addItem("Clownfish", "fact-clownfish");
-        speciesMenu.addItem("Prev Page", "species-1");
-        speciesMenu.addItem("Back to Fish Facts Menu", "back-facts");
-        return console.showMenu(speciesMenu);
     }
 }

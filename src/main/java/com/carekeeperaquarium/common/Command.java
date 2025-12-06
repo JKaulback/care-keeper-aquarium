@@ -12,8 +12,7 @@ public enum Command {
     REMOVE_FISH("remove-fish"),
     CLEAN_TANK("clean-tank"),
     VIEW_TANK("view-tank"),
-    GET_FISH_FACT_GENERAL("get-fish-fact-general"),
-    FACT("fact-"),
+    GET_FISH_FACT("get-fish-fact"),
     QUIT("quit", "exit"),
     UNKNOWN("");
     
@@ -39,11 +38,6 @@ public enum Command {
             if (cmd == UNKNOWN) continue;
             
             for (String alias : cmd.aliases) {
-                // For FACT command, check if input starts with the prefix
-                if (cmd == FACT && normalized.startsWith(alias)) {
-                    return cmd;
-                }
-                // For other commands, exact match
                 if (normalized.equals(alias)) {
                     return cmd;
                 }

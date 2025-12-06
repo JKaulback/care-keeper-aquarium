@@ -171,8 +171,7 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
                 }
                 case CLEAN_TANK -> { this.out.println(aquariumManager.cleanTank()); }
                 case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }
-                case GET_FISH_FACT_GENERAL -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
-                case FACT -> { this.out.println("Feature to get specific fish facts is not yet implemented."); } // TODO
+                case GET_FISH_FACT -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
                 case QUIT -> { 
                     this.out.println("Goodbye, " + username + "!"); 
                     return;
