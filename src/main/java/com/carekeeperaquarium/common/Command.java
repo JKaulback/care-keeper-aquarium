@@ -15,7 +15,6 @@ public enum Command {
     GET_FISH_FACT_GENERAL("get-fish-fact-general"),
     FACT("fact-"),
     QUIT("quit", "exit"),
-    QUIT_MENU("quit-menu"),
     UNKNOWN("");
     
     private final String[] aliases;

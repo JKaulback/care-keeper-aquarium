@@ -59,7 +59,7 @@ public class MenuHandler {
         mainMenu.addItem("Manage Fish", "manage-fish");
         mainMenu.addItem("Manage Tank", "manage-tank");
         mainMenu.addItem("Get Fish Facts", "fish-facts");
-        mainMenu.addItem("Quit", Command.QUIT_MENU.getPrimaryAlias());
+        mainMenu.addItem("Log Out", Command.QUIT.getPrimaryAlias());
         return console.showMenu(mainMenu);
     }
 

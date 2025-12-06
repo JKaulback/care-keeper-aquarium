@@ -12,6 +12,7 @@ public class AquariumServer {
     public static final int SERVER_PORT = 8080;
     public static final List<ClientHandler> connectedClients = new ArrayList<>();
     private static final AquariumManager aquariumManager = new AquariumManager();
+    private static final ServerObserver serverObserver = new ServerObserver();
 
     public void run() throws IOException {
         ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
@@ -52,9 +53,11 @@ public class AquariumServer {
 
     public static synchronized void addClient(ClientHandler client) {
         connectedClients.add(client);
+        serverObserver.addPropertyChangeListener(client);
     }
 
     public static synchronized void removeClient(ClientHandler client) {
         connectedClients.remove(client);
+        serverObserver.removePropertyChangeListener(client);
     }
 }

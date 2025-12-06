@@ -15,6 +15,7 @@ public class ConsoleUI {
     private final Terminal terminal;
     private final LineReader lineReader;
     private final BindingReader bindingReader;
+    private String statusHeader = "";
 
     public ConsoleUI() throws IOException {
         terminal = TerminalBuilder.builder()
@@ -29,6 +30,10 @@ public class ConsoleUI {
                 .build();
         
         bindingReader = new BindingReader(terminal.reader());
+    }
+
+    public void setStatusHeader(String status) {
+        this.statusHeader = status;
     }
 
     public void println(String message) {
@@ -91,6 +96,17 @@ public class ConsoleUI {
 
     private void displayMenu(Menu menu, int selected) {
         clearScreen();
+
+        // Display status header at the top if available
+        if (!statusHeader.isEmpty()) {
+            println("╔═══════════════════════════════════════════════════════════════╗");
+            String[] statusLines = statusHeader.split("\n");
+            for (String line : statusLines) {
+                println("║ " + line);
+            }
+            println("╚═══════════════════════════════════════════════════════════════╗");
+            println("");
+        }
 
         // Display title
         println("\n" + menu.getTitle());

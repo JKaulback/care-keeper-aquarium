@@ -1,5 +1,7 @@
 package com.carekeeperaquarium.server;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +15,7 @@ import com.carekeeperaquarium.common.Command;
 import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
 
-public class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable, PropertyChangeListener {
 
     private static final String CANCEL_STRING = "Cancelled. No changes made";
 
@@ -55,6 +57,15 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if (propertyName.equals("tank-update")) {
+            this.out.println("TANKUPDATE:START");
+            this.out.println(evt.getNewValue());
+        }
+    }
+
     private boolean isUsernameNotNullOrEmpty(String username) {
         return username != null && !username.trim().isEmpty();
     }
@@ -70,30 +81,37 @@ public class ClientHandler implements Runnable {
             
             // Validate username not null or empty
             if (!isUsernameNotNullOrEmpty(username)) {
-                this.out.println("Invalid username. Please try again."); 
+                handleLoginFail("Invalid username. Please try again.");
                 continue;
             }    
 
             // Validate username uses legal characters
             if (!isValidNameCharacters(username)) {
-                this.out.println("Invalid username. Can not contain special characters");
+                handleLoginFail("Invalid username. Can not contain special characters");
                 continue;
             }
 
             // Check if user already logged in
             if (aquariumManager.hasUser(username)) {
-                this.out.println("Username already logged in. Please try a different username.");
+                handleLoginFail("Username already logged in. Please try a different username.");
                 continue;
             }
+
             // Username acceptable
             break;
 
         }
+        this.out.println("LOGIN:SUCCESSFUL");
         // Create user profile and add to aquarium manager
         UserProfile user = new UserProfile(username);
         aquariumManager.addUser(user);
         this.out.println("Login successful! Welcome, " + username + ".");
         System.out.println("User " + username + " has logged in");
+    }
+
+    private void handleLoginFail(String message) {
+        this.out.println("LOGIN:FAIL");
+        this.out.println(message);
     }
 
     private void runMainLoop() throws IOException {

@@ -16,6 +16,7 @@ public class AquariumClient {
     private PrintWriter out;
     private BufferedReader in;
     private final ConsoleUI console;
+    private String aquariumStatus = "This is a placeholder\ntext to represent\nwhat I want to show";
     private volatile boolean running = true;
     private volatile boolean loggedIn = false;
     private volatile boolean pauseMessages = false;
@@ -23,6 +24,8 @@ public class AquariumClient {
 
     public AquariumClient() throws IOException {
         console = new ConsoleUI();
+        // Set initial status
+        console.setStatusHeader(aquariumStatus);
     }
 
     public void run() throws IOException {
@@ -40,7 +43,7 @@ public class AquariumClient {
         listenerThread.start();
         
         // Main thread handles user input
-        handleUserInput();
+        handleUserSession();
     }
 
     private void listenForMessages() {
@@ -53,6 +56,9 @@ public class AquariumClient {
                         case "FISH_LIST:START" -> handleFishListSelection();
                         case "FISH_LIST:EMPTY" -> console.println("You don't have any fish to remove.");
                         case "FISH_LIST:ERROR" -> console.println("Error retrieving fish list.");
+                        case "STATUS_UPDATE:START" -> handleStatusUpdate();
+                        case "LOGIN:SUCCESSFUL" -> handleSuccessfulLogin();
+                        case "LOGIN:FAIL" -> handleLoginFail();
                         default -> console.println(message);
                     }
                 }
@@ -62,6 +68,16 @@ public class AquariumClient {
                 console.println("Disconnected from server.");
             }
         }
+    }
+
+    private void handleSuccessfulLogin() {
+        loggedIn = true;
+        waitingForServerInput = false;
+    }
+
+    private void handleLoginFail() throws IOException {
+        console.println(in.readLine());
+        waitingForServerInput = false;
     }
 
     private void handleFishListSelection() throws IOException {
@@ -76,7 +92,7 @@ public class AquariumClient {
             }
             
             if (fishList.isEmpty()) {
-                console.println("No fish available to remove.");
+                console.println("No fish available");
                 out.println("!cancel");
                 return;
             }
@@ -86,56 +102,92 @@ public class AquariumClient {
             
             // Send selection back to server
             out.println(selection);
+
         } finally {
             waitingForServerInput = false;
         }
     }
 
-    private void handleUserInput() {
+    private void handleStatusUpdate() throws IOException {
+        StringBuilder statusBuilder = new StringBuilder();
+        String line;
+        
+        // Collect all status data until END marker
+        while ((line = in.readLine()) != null && !line.equals("STATUS_UPDATE:END")) {
+            if (statusBuilder.length() > 0) {
+                statusBuilder.append("\n");
+            }
+            statusBuilder.append(line);
+        }
+        
+        aquariumStatus = statusBuilder.toString();
+        console.setStatusHeader(aquariumStatus);
+    }
+
+    private void handleUserSession() {
         try {
             String input;
+            
+            handleLogin();
+                
             while (running) {
                 // Wait if server is requesting input from the listener thread
-                while (waitingForServerInput) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        return;
-                    }
-                }
-                
-                if (!loggedIn) {
-                    input = console.readLine("Enter username: ");
-                    if (input != null && !input.trim().isEmpty()) {
-                        out.println(input);
-                        loggedIn = true;
-                    }
+                if (waitingForServerInput) {
+                    pauseThreadFor(100);
                     continue;
                 }
 
-                input = console.readLine("Press enter to open the menu or 'quit' to stop: ");
+                // Let the user decide when to move on
+                console.readLine("Press enter to continue: ");
                 
-                if (input.equalsIgnoreCase("quit"))
-                    break;
-
-                pauseMessages = true;
                 input = MenuHandler.handleMenu(console);
-                pauseMessages = false;
                 
-                if (input.equalsIgnoreCase("quit-menu"))
-                    continue;
-
                 // Set flag before sending remove-fish command to wait for server response
                 if (input.equalsIgnoreCase(Command.REMOVE_FISH.getPrimaryAlias())) {
                     waitingForServerInput = true;
                 }
+
+                // Check if quitting
+                if (isQuit(input))
+                    break;
                 
+                // Send to server
                 this.out.println(input);
             }
         } finally {
             closeConnection();
         }
+    }
+
+    private boolean isQuit(String input) {
+        for (String quitVal : Command.QUIT.getAliases()) {
+            if (input.equalsIgnoreCase(quitVal))
+                return true;
+        }
+        return false;
+    }
+
+    private void handleLogin() {
+        while (!loggedIn) {
+            if (waitingForServerInput) {
+                pauseThreadFor(100);
+                continue;
+            }
+            String input = console.readLine("Enter username: ");
+            if (input != null && !input.trim().isEmpty()) {
+                out.println(input);
+                waitingForServerInput = true;
+            }
+        }
+    }
+
+    private void pauseThreadFor(int duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
     }
 
     private void closeConnection() {
