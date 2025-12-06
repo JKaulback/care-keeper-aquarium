@@ -122,6 +122,9 @@ public class AquariumClient {
         
         aquariumStatus = statusBuilder.toString();
         console.setStatusHeader(aquariumStatus);
+        
+        // Don't auto-refresh to avoid clearing menus
+        // Status will be displayed next time user opens menu
     }
 
     private void handleUserSession() {

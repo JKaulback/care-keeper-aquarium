@@ -168,7 +168,7 @@ class UserProfileTest {
     @Test
     void testAddFishWhenFullThrowsException() {
         // Add 10 fish to reach max capacity
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 9; i++) {
             profile.addFish(new Fish("Fish" + i, random));
         }
         
@@ -183,7 +183,7 @@ class UserProfileTest {
     void testIsFull() {
         assertFalse(profile.isFull());
         
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 9; i++) {
             profile.addFish(new Fish("Fish" + i, random));
         }
         
@@ -192,7 +192,7 @@ class UserProfileTest {
 
     @Test
     void testGetMaxFish() {
-        assertEquals(10, profile.getMaxFish());
+        assertEquals(9, profile.getMaxFish());
     }
 
     @Test

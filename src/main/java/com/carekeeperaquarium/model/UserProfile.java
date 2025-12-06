@@ -9,7 +9,7 @@ public class UserProfile {
     private int points;
     private final ArrayList<Fish> ownedFishes;
     
-    private static final int MAX_FISH = 10;
+    private static final int MAX_FISH = 9;
 
     // --- CONSTRUCTORS ---
     public UserProfile(String username) {
@@ -67,6 +67,10 @@ public class UserProfile {
         return false;
     }
 
+    public boolean hasFish() {
+        return this.ownedFishes.size() > 0;
+    }
+
     public ArrayList<Fish> getDeadFish() {
         ArrayList<Fish> deadFish = new ArrayList<>();
         for (Fish fish : ownedFishes) {
@@ -75,6 +79,16 @@ public class UserProfile {
             }
         }
         return deadFish;
+    }
+
+    public ArrayList<Fish> getLiveFish() {
+        ArrayList<Fish> livingFish = new ArrayList<>();
+        for (Fish fish : ownedFishes) {
+            if (!fish.isDead()) {
+                livingFish.add(fish);
+            }
+        }
+        return livingFish;
     }
 
     @Override

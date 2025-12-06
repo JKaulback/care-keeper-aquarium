@@ -86,6 +86,8 @@ public class Fish {
 
     public int getHealth() { return this.health; }
 
+    public int getMaxHealth() { return MAX_HEALTH; }
+
     public int getAge() { return this.age; }
     
     public int getSize() { return this.size; }

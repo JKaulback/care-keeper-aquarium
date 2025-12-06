@@ -12,19 +12,22 @@ import org.junit.jupiter.api.Test;
 
 import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
+import com.carekeeperaquarium.server.StateObserver;
 
 /**
  * Tests for AquariumManager.
  * Tests verify that AquariumManager properly synchronizes access to AquariumState.
  */
 class AquariumManagerTest {
+    private StateObserver observer;
     private AquariumManager manager;
     private Random random;
 
     @BeforeEach
     void setUp() {
         random = new Random();
-        manager = new AquariumManager();
+        observer = new StateObserver();
+        manager = new AquariumManager(observer);
         
         // Clear all users before each test
         for (UserProfile user : manager.getUsers()) {

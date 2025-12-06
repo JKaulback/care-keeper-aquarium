@@ -9,15 +9,21 @@ import java.util.function.Supplier;
 import com.carekeeperaquarium.model.AquariumState;
 import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
+import com.carekeeperaquarium.server.StateObserver;
 
 public class AquariumManager {
     private final AquariumState aquariumInstance;
+    private final StateObserver stateObserver;
 
     private final ReentrantLock lock = new ReentrantLock();
     
     // Initialize the AquariumManager and start scheduled tasks
-    public AquariumManager() {
+    public AquariumManager(StateObserver serverObserver) {
         this.aquariumInstance = AquariumState.getInstance();
+        this.stateObserver = serverObserver;
+        
+        // Set observer in AquariumState so it can notify on changes
+        this.aquariumInstance.setObserver(serverObserver);
 
         startScheduledTasks();
     }
@@ -75,21 +81,12 @@ public class AquariumManager {
         return executeWithLock(() -> aquariumInstance.hasUser(username));
     }
 
+    public String getAquariumStateSummaryFor(String username) {
+        return executeWithLock(() -> aquariumInstance.getSummaryFor(username));
+    }
+
     public String getAquariumStateSummary() {
-        return executeWithLock(() -> {
-            StringBuilder summary = new StringBuilder();
-            summary.append("Aquarium Cleanliness: ")
-                   .append(String.format("%.2f", aquariumInstance.getTankCleanliness()))
-                   .append("\n");
-            summary.append("Users Online: ").append(aquariumInstance.getUsers().size()).append("\n");
-            for (UserProfile user : aquariumInstance.getUsers()) {
-                summary.append("- ").append(user.getUsername())
-                       .append(" (Points: ").append(user.getPoints())
-                       .append(", Fish Owned: ").append(user.getNumberOfFishOwned())
-                       .append(")\n");
-            }
-            return summary.toString();
-        });
+        return executeWithLock(() -> aquariumInstance.getSummary());
     }
 
     // --- MODIFIERS ---

@@ -5,11 +5,11 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerObserver {
+public class StateObserver {
     private List<PropertyChangeListener> listeners;
     private String aquariumSummary;
 
-    public ServerObserver() {
+    public StateObserver() {
         listeners = new ArrayList<>();
         aquariumSummary = "Nothing yet...";
     }

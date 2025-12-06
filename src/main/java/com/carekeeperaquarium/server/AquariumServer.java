@@ -11,8 +11,8 @@ import com.carekeeperaquarium.business.ThreadPoolManager;
 public class AquariumServer {
     public static final int SERVER_PORT = 8080;
     public static final List<ClientHandler> connectedClients = new ArrayList<>();
-    private static final AquariumManager aquariumManager = new AquariumManager();
-    private static final ServerObserver serverObserver = new ServerObserver();
+    private static final StateObserver stateObserver = new StateObserver();
+    private static final AquariumManager aquariumManager = new AquariumManager(stateObserver);
 
     public void run() throws IOException {
         ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
@@ -37,7 +37,8 @@ public class AquariumServer {
             while (true) {
                 ClientHandler clientHandler = new ClientHandler(
                     serverSocket.accept(),
-                    aquariumManager
+                    aquariumManager,
+                    stateObserver
                 );
                 addClient(clientHandler);
                 ThreadPoolManager.getClientExecutor().execute(clientHandler);
@@ -53,11 +54,9 @@ public class AquariumServer {
 
     public static synchronized void addClient(ClientHandler client) {
         connectedClients.add(client);
-        serverObserver.addPropertyChangeListener(client);
     }
 
     public static synchronized void removeClient(ClientHandler client) {
         connectedClients.remove(client);
-        serverObserver.removePropertyChangeListener(client);
     }
 }

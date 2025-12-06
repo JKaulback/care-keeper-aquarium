@@ -21,13 +21,18 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
 
     private final Socket socket;
     private final AquariumManager aquariumManager;
+    private final StateObserver stateObserver;
     private BufferedReader in;
     private PrintWriter out;
     private String username;
 
-    public ClientHandler(Socket socket, AquariumManager aquariumManager) {
+    public ClientHandler(Socket socket, AquariumManager aquariumManager, StateObserver stateObserver) {
         this.socket = socket;
         this.aquariumManager = aquariumManager;
+        this.stateObserver = stateObserver;
+        
+        // Register this client as a listener for state changes
+        stateObserver.addPropertyChangeListener(this);
     }
 
     @Override
@@ -36,8 +41,10 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
             // Handle user registration/login
-            
             handleLogin();
+
+            // Send initial status
+            sendStatusUpdate();
 
             // Main interaction loop (to be implemented)
             runMainLoop();
@@ -60,10 +67,15 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        if (propertyName.equals("tank-update")) {
-            this.out.println("TANKUPDATE:START");
-            this.out.println(evt.getNewValue());
+        if (propertyName.equals("tankUpdate") && !(username == null)) {
+            sendStatusUpdate();
         }
+    }
+
+    private void sendStatusUpdate() {
+        this.out.println("STATUS_UPDATE:START");
+        this.out.println(aquariumManager.getAquariumStateSummaryFor(username));
+        this.out.println("STATUS_UPDATE:END");
     }
 
     private boolean isUsernameNotNullOrEmpty(String username) {
@@ -171,6 +183,9 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
     }
 
     private void handleShutdown() throws IOException {
+        // Unregister from state observer
+        stateObserver.removePropertyChangeListener(this);
+        
         if (username != null) {
             try {
                 this.out.println("Goodbye, " + username + "!");

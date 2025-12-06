@@ -36,6 +36,24 @@ public class ConsoleUI {
         this.statusHeader = status;
     }
 
+    public void displayStatusHeader() {
+        if (!statusHeader.isEmpty() && !lineReader.isReading()) {
+            clearScreen();
+            displayStatusHeaderContent();
+            terminal.flush();
+        }
+    }
+
+    private void displayStatusHeaderContent() {
+        terminal.writer().println("╔═══════════════════════════════════════════════════════════════╗");
+        String[] statusLines = statusHeader.split("\n");
+        for (String line : statusLines) {
+            terminal.writer().println("║ " + line);
+        }
+        terminal.writer().println("╚═══════════════════════════════════════════════════════════════╗");
+        terminal.writer().println("");
+    }
+
     public void println(String message) {
         // If we're currently reading input, print above the prompt line
         if (lineReader.isReading()) {
