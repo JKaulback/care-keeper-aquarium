@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 import com.carekeeperaquarium.business.AquariumManager;
 import com.carekeeperaquarium.common.Command;
+import com.carekeeperaquarium.integration.FishFactAPI;
 import com.carekeeperaquarium.model.Fish;
 import com.carekeeperaquarium.model.UserProfile;
 
@@ -168,7 +169,15 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
                 }
                 case CLEAN_TANK -> { this.out.println(aquariumManager.cleanTank()); }
                 case VIEW_TANK -> { this.out.println(aquariumManager.getAquariumStateSummary()); }
-                case GET_FISH_FACT -> { this.out.println("Feature to get general fish facts is not yet implemented.");} // TODO
+                case GET_FISH_FACT -> { 
+                    String message;
+                    this.out.println("FISH_FACT:START");
+                    
+                    try { message = FishFactAPI.getRandomFishFact(); }
+                    catch (Exception e) { message = e.getMessage(); }
+
+                    this.out.println(message);
+                }
                 case QUIT -> { 
                     this.out.println("Goodbye, " + username + "!"); 
                     return;

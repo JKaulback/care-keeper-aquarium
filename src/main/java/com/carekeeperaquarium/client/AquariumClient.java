@@ -56,6 +56,7 @@ public class AquariumClient {
                         case "FISH_LIST:START" -> handleFishListSelection();
                         case "FISH_LIST:EMPTY" -> console.println("You don't have any fish to remove.");
                         case "FISH_LIST:ERROR" -> console.println("Error retrieving fish list.");
+                        case "FISH_FACT:START" -> handleFishFactSelection();
                         case "STATUS_UPDATE:START" -> handleStatusUpdate();
                         case "LOGIN:SUCCESSFUL" -> handleSuccessfulLogin();
                         case "LOGIN:FAIL" -> handleLoginFail();
@@ -108,6 +109,16 @@ public class AquariumClient {
         }
     }
 
+    private void handleFishFactSelection() throws IOException {
+        try {
+            console.println("Waiting for fish fact...");
+
+            console.println(in.readLine());
+        } finally {
+            waitingForServerInput = false;
+        }
+    }
+
     private void handleStatusUpdate() throws IOException {
         StringBuilder statusBuilder = new StringBuilder();
         String line;
@@ -146,7 +157,9 @@ public class AquariumClient {
                 input = MenuHandler.handleMenu(console);
                 
                 // Set flag before sending remove-fish command to wait for server response
-                if (input.equalsIgnoreCase(Command.REMOVE_FISH.getPrimaryAlias())) {
+                if (input.equalsIgnoreCase(Command.REMOVE_FISH.getPrimaryAlias()) ||
+                    input.equalsIgnoreCase(Command.GET_FISH_FACT.getPrimaryAlias())) {
+
                     waitingForServerInput = true;
                 }
 
