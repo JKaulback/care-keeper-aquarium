@@ -112,10 +112,53 @@ public class AquariumClient {
     private void handleFishFactSelection() throws IOException {
         try {
             console.println("Waiting for fish fact...");
-
-            console.println(in.readLine());
+            
+            String fact = in.readLine();
+            
+            // Clear the "Waiting for fish fact..." message
+            console.clearLastLine();
+            
+            // Print the actual fact with word wrapping
+            printWrapped(fact, 80);
+            console.println(""); // Add blank line after
         } finally {
             waitingForServerInput = false;
+        }
+    }
+    
+    private void printWrapped(String text, int maxWidth) {
+        if (text == null || text.isEmpty()) {
+            return;
+        }
+        
+        String[] words = text.split("\\s+");
+        StringBuilder line = new StringBuilder();
+        
+        for (String word : words) {
+            // If adding this word would exceed max width, print current line and start new one
+            if (line.length() + word.length() + 1 > maxWidth) {
+                if (line.length() > 0) {
+                    console.println(line.toString());
+                    line = new StringBuilder();
+                }
+                
+                // Handle words longer than maxWidth
+                if (word.length() > maxWidth) {
+                    console.println(word.substring(0, maxWidth));
+                    word = word.substring(maxWidth);
+                }
+            }
+            
+            // Add word to current line
+            if (line.length() > 0) {
+                line.append(" ");
+            }
+            line.append(word);
+        }
+        
+        // Print remaining text
+        if (line.length() > 0) {
+            console.println(line.toString());
         }
     }
 

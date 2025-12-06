@@ -64,6 +64,14 @@ public class ConsoleUI {
         }
     }
 
+    public void clearLastLine() {
+        // Move cursor up one line and clear it
+        terminal.writer().print("\033[1A"); // Move up
+        terminal.writer().print("\033[2K"); // Clear line
+        terminal.writer().print("\r");      // Move to start
+        terminal.flush();
+    }
+
     public String readLine(String prompt) {
         try {
             return lineReader.readLine(prompt);
