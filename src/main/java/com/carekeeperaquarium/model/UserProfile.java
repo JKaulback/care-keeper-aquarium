@@ -68,7 +68,7 @@ public class UserProfile {
     }
 
     public boolean hasFish() {
-        return this.ownedFishes.size() > 0;
+        return !this.ownedFishes.isEmpty();
     }
 
     public ArrayList<Fish> getDeadFish() {

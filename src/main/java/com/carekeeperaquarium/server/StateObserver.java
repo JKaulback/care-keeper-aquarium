@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StateObserver {
-    private List<PropertyChangeListener> listeners;
+    private final List<PropertyChangeListener> listeners;
     private String aquariumSummary;
 
     public StateObserver() {

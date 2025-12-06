@@ -13,14 +13,12 @@ import com.carekeeperaquarium.server.StateObserver;
 
 public class AquariumManager {
     private final AquariumState aquariumInstance;
-    private final StateObserver stateObserver;
 
     private final ReentrantLock lock = new ReentrantLock();
     
     // Initialize the AquariumManager and start scheduled tasks
     public AquariumManager(StateObserver serverObserver) {
         this.aquariumInstance = AquariumState.getInstance();
-        this.stateObserver = serverObserver;
         
         // Set observer in AquariumState so it can notify on changes
         this.aquariumInstance.setObserver(serverObserver);

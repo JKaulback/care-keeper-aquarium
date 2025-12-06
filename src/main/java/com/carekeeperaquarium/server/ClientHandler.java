@@ -30,21 +30,18 @@ public class ClientHandler implements Runnable, PropertyChangeListener {
         this.socket = socket;
         this.aquariumManager = aquariumManager;
         this.stateObserver = stateObserver;
-        
-        // Register this client as a listener for state changes
-        stateObserver.addPropertyChangeListener(this);
     }
 
     @Override
     public void run() {
         try {
+            // Register this client as a listener for state changes
+            stateObserver.addPropertyChangeListener(this);
+            
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
             // Handle user registration/login
             handleLogin();
-
-            // Send initial status
-            sendStatusUpdate();
 
             // Main interaction loop (to be implemented)
             runMainLoop();
